@@ -1,29 +1,94 @@
 <?php
 require_once("PreguntaCorta.php");
+require_once("Answer.php");
+require_once("PreguntaSeleccion.php");
 
+/*// Probar pregunta corta.
 $preguntaCorta=new PreguntaCorta();
+$answer= new Answer();
 
 $preguntaCorta->setCategory("categoria sistema");
 $xml=$preguntaCorta->getInicioXML();
 
-$respuesta1[]=['bien','regular','mal'];
-$respuesta2[]=['blanco','amarillo','azul'];
-$pregunta1=['texto pregunta corta1','enunciado pregunta corta1',$respuesta1];
-$pregunta2=['texto pregunta corta2','enunciado pregunta corta2',$respuesta2];
-$preguntas[]=$pregunta1;
-$preguntas[]=$pregunta2;
+$xml=$preguntaCorta->createHeadShortanswer($xml);
 
+$preguntaCorta->setName("Respuesta corta");
+$preguntaCorta->setQuestiontext("<![CDATA[<p>Enunciado de la respuesta corta</p>]]>");
+$preguntaCorta->setType("shortanswer");
+$preguntaCorta->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta corta</p>]]>");
 
-foreach ($preguntas as $pregunta){
-    $preguntaCorta->setName($pregunta[0]);
-    $preguntaCorta->setQuestiontext($pregunta[1]);
-    $xml=$preguntaCorta->createHeadShortanswer($xml);
-    foreach($pregunta[2] as $respuesta){
-        $preguntaCorta->setAnswertext($respuesta);
-        $xml=$preguntaCorta->createAnswer($xml);
-    }
-}
+// Rellenamos las contestaciones posibles.
+$answer= new Answer();
 
+$answer->setAttriFraction("100");
+$answer->setAttriFormat("moodle_auto_format");
+$answer->setText("bien");
+$answer->setTextfeedback(("<![CDATA[<p>Retroalimentación de respuesta corta bien</p>]]>"));
+$answers[]=$answer;
+
+unset($answer);
+
+$answer= new Answer();
+
+$answer->setAttriFraction("0");
+$answer->setAttriFormat("moodle_auto_format");
+$answer->setText("mal");
+$answer->setTextfeedback(("<![CDATA[<p>Retroalimentación de respuesta corta mal</p>]]>"));
+$answers[]=$answer;
+
+unset($answer);
+
+$preguntaCorta->setAnswers($answers);
+
+$answers=$preguntaCorta->getAnswers();
+
+$xml=$preguntaCorta->createAnswer($xml);*/
+// Fin pregunta corta
+
+// Probar pregunta multichoice
+
+$preguntaSeleccion=new PreguntaSeleccion();
+$answer= new Answer();
+
+$preguntaSeleccion->setCategory("categoria sistema");
+$xml=$preguntaSeleccion->getInicioXML();
+
+$xml=$preguntaSeleccion->createHeadMultiChoice($xml);
+
+$preguntaSeleccion->setName("Respuesta corta");
+$preguntaSeleccion->setQuestiontext("<![CDATA[<p>Enunciado de la respuesta multichoice</p>]]>");
+$preguntaSeleccion->setGeneralfeedback("<![CDATA[<p>Retroalimentación General de respuesta multichoice</p>]]>");
+
+// Rellenamos las contestaciones posibles.
+$answer= new Answer();
+$answer->setAttriFraction("100");
+$answer->setAttriFormat("html");
+$answer->setText("<![CDATA[<p>Primera Elección</p>]]>");
+$answer->setTextfeedback(("<![CDATA[<p>retroalimentación de primera elección.</p>]]>"));
+$answers[]=$answer;
+unset($answer);
+
+$answer= new Answer();
+$answer->setAttriFraction("0");
+$answer->setAttriFormat("html");
+$answer->setText("<![CDATA[<p>Segunda Elección</p>]]>");
+$answer->setTextfeedback(("<![CDATA[<p>Retroalimentacion de segunda elección.</p>]]>"));
+$answers[]=$answer;
+unset($answer);
+
+$answer= new Answer();
+$answer->setAttriFraction("0");
+$answer->setAttriFormat("html");
+$answer->setText("<![CDATA[<p>Elección 3</p>]]>");
+$answer->setTextfeedback(("<![CDATA[<p>Retroalimentación de 3</p>]]>"));
+$answers[]=$answer;
+unset($answer);
+
+$preguntaSeleccion->setAnswers($answers);
+
+$answers=$preguntaSeleccion->getAnswers();
+
+$xml=$preguntaSeleccion->createAnswer($xml);
 
 
 

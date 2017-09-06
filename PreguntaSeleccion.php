@@ -1,10 +1,9 @@
 <?php
-require_once("Pregunta.php");
-require_once("Answer.php");
+require_once('Pregunta.php');
+require_once('Answer.php');
 
-class PreguntaCorta extends Pregunta
+class PreguntaSeleccion extends Pregunta
 {
-
     private $name;
     private $question;
     private $questiontext;
@@ -12,35 +11,21 @@ class PreguntaCorta extends Pregunta
     private $defaultgrade;
     private $penalty;
     private $hidden;
-    private $usecase;
+    private $single;
+    private $shuffleanswers;
+    private $answernumbering;
+    private $textCorrectfeedback;
+    private $textPartiallycorrectfeedback;
+    private $textIncorrectfeedback;
     private $answers=array();
 
-
     /**
-     * PreguntaCorta constructor.
+     * PreguntaSeleccion constructor.
      */
     public function __construct()
     {
-        $this->setType('shortanswer');
+        $this->setType('multichoice');
         parent::__construct($this->getType());
-
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getQuestion()
-    {
-        return $this->question;
-    }
-
-    /**
-     * @param mixed $question
-     */
-    public function setQuestion($question)
-    {
-        $this->question = $question;
     }
 
     /**
@@ -62,6 +47,22 @@ class PreguntaCorta extends Pregunta
     /**
      * @return mixed
      */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
+    /**
+     * @param mixed $question
+     */
+    public function setQuestion($question)
+    {
+        $this->question = $question;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getQuestiontext()
     {
         return $this->questiontext;
@@ -74,7 +75,6 @@ class PreguntaCorta extends Pregunta
     {
         $this->questiontext = $questiontext;
     }
-
 
     /**
      * @return mixed
@@ -143,17 +143,97 @@ class PreguntaCorta extends Pregunta
     /**
      * @return mixed
      */
-    public function getUsecase()
+    public function getSingle()
     {
-        return $this->usecase;
+        return $this->single;
     }
 
     /**
-     * @param mixed $usecase
+     * @param mixed $single
      */
-    public function setUsecase($usecase)
+    public function setSingle($single)
     {
-        $this->usecase = $usecase;
+        $this->single = $single;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShuffleanswers()
+    {
+        return $this->shuffleanswers;
+    }
+
+    /**
+     * @param mixed $shuffleanswers
+     */
+    public function setShuffleanswers($shuffleanswers)
+    {
+        $this->shuffleanswers = $shuffleanswers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnswernumbering()
+    {
+        return $this->answernumbering;
+    }
+
+    /**
+     * @param mixed $answernumbering
+     */
+    public function setAnswernumbering($answernumbering)
+    {
+        $this->answernumbering = $answernumbering;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTextCorrectfeedback()
+    {
+        return $this->textCorrectfeedback;
+    }
+
+    /**
+     * @param mixed $textCorrectfeedback
+     */
+    public function setTextCorrectfeedback($textCorrectfeedback)
+    {
+        $this->textCorrectfeedback = $textCorrectfeedback;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTextPartiallycorrectfeedback()
+    {
+        return $this->textPartiallycorrectfeedback;
+    }
+
+    /**
+     * @param mixed $textPartiallycorrectfeedback
+     */
+    public function setTextPartiallycorrectfeedback($textPartiallycorrectfeedback)
+    {
+        $this->textPartiallycorrectfeedback = $textPartiallycorrectfeedback;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTextIncorrectfeedback()
+    {
+        return $this->textIncorrectfeedback;
+    }
+
+    /**
+     * @param mixed $textIncorrectfeedback
+     */
+    public function setTextIncorrectfeedback($textIncorrectfeedback)
+    {
+        $this->textIncorrectfeedback = $textIncorrectfeedback;
     }
 
     /**
@@ -169,17 +249,15 @@ class PreguntaCorta extends Pregunta
      */
     public function setAnswers($answers)
     {
-        $this->answers= $answers;
+        $this->answers = $answers;
     }
-
-
 
     /**
      * @param $xml
      * @return mixed
-     * Devuelve la cabecera de pregunta corta.
+     * Devuelve la cabecera de pregunta multichoice.
      */
-    public function createHeadShortanswer($xml){
+    public function createHeadMultiChoice($xml){
         $head=$xml->createElement('question');
         $root=$this->getRoot();
         $question=$root->appendChild($head);
@@ -217,5 +295,5 @@ class PreguntaCorta extends Pregunta
 
         return $xml;
     }
-
 }
+

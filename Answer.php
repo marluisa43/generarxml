@@ -1,7 +1,7 @@
 <?php
 
 
-class answerShortanswer
+class Answer
 {
     private $attriFraction;
     private $attriFormat;
