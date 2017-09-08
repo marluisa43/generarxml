@@ -1,11 +1,12 @@
 <?php
-require_once("Pregunta.php");
+require_once("BeginXml.php");
 require_once("Answer.php");
 
-class PreguntaCorta extends Pregunta
+class PreguntaCorta
 {
 
     private $name;
+    private $type;
     private $question;
     private $questiontext;
     private $generalfeedback;
@@ -14,17 +15,35 @@ class PreguntaCorta extends Pregunta
     private $hidden;
     private $usecase;
     private $answers=array();
+    private $root;
 
 
     /**
      * PreguntaCorta constructor.
      */
-    public function __construct()
+    public function __construct($root)
     {
         $this->setType('shortanswer');
-        parent::__construct($this->getType());
+        $this->setRoot($root);
 
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param mixed $root
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+    }
+
 
 
     /**
@@ -58,6 +77,24 @@ class PreguntaCorta extends Pregunta
     {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+
 
     /**
      * @return mixed
@@ -190,13 +227,13 @@ class PreguntaCorta extends Pregunta
         $name=$xml->createElement('name');
         $name=$question->appendChild($name);
         $text=$xml->createElement('text',$this->getName());
-        $text=$name->appendChild($text);
+        $name->appendChild($text);
 
         $enum=$xml->createElement('questiontext');
         $enum=$question->appendChild($enum);
         $enum->setAttribute('format','html');
         $text=$xml->createElement('text',$this->getQuestiontext());
-        $text=$enum->appendChild($text);
+        $enum->appendChild($text);
 
         return $xml;
     }
@@ -211,7 +248,7 @@ class PreguntaCorta extends Pregunta
 
             $answernodo->setAttribute('format',$answer->getAttriFormat());
             $text=$xml->createElement('text',$answer->getText());
-            $text=$answernodo->appendChild($text);
+            $answernodo->appendChild($text);
         }
 
 

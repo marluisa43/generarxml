@@ -1,10 +1,9 @@
 <?php
 
 
-class Pregunta{
+class BeginXml{
 
     private $cabecera;
-    private $type;
     private $category;
     private $root;
 
@@ -12,28 +11,12 @@ class Pregunta{
     /**
      * Pregunta constructor.
      */
-    public function __construct($type)
+    public function __construct()
     {
         $this->xml=null;
         $this->cabecera = new DOMDocument("1.0","UTF-8");
-        $this->type=$type;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
 
     /**
      * @return mixed
@@ -90,24 +73,25 @@ class Pregunta{
      */
     public function getInicioXML(){
         $xml=$this->getCabecera();
+        $xml->preserveWhiteSpace = false;
+        $xml->formatOutput = true;
 
         $root = $xml->createElement('quiz');
         $root = $xml->appendChild($root);
         $this->setRoot($root);
 
         if (!is_null($this->getCategory())){
-            $question=$xml->createElement('question');
-            $question=$root->appendChild($question);
+            $question = $xml->createElement('question');
+            $question = $root->appendChild($question);
             $question->setAttribute('type','category');
-            $categoria=$xml->createElement('category');
-            $categoria=$question->appendChild($categoria);
+            $categoria = $xml->createElement('category');
+            $categoria = $question->appendChild($categoria);
             $text=$xml->createElement('text',$this->getCategory());
-            $text=$categoria->appendChild($text);
+            $categoria->appendChild($text);
 
         }
 
         return $xml;
     }
-
 
 }
