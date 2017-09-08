@@ -3,6 +3,7 @@ require_once("PreguntaCorta.php");
 require_once("Answer.php");
 require_once("PreguntaSeleccion.php");
 require_once("Hint.php");
+require_once("BeginXml.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -15,7 +16,7 @@ $xml=$inicioXml->getInicioXML();
 /*$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 $answer= new Answer();
 
-$xml=$preguntaCorta->createHeadShortanswer($xml);
+$xml=$preguntaCorta->createShortanswer($xml);
 
 $preguntaCorta->setName("Respuesta corta");
 $preguntaCorta->setQuestiontext("<![CDATA[<p>Enunciado de la respuesta corta</p>]]>");
@@ -123,10 +124,6 @@ $preguntaSeleccion->setHints($hints);
 
 // Llamamos para construir el xml correspondiente a esta pregunta.
 $xml=$preguntaSeleccion->createMultiChoice($xml);
-
-
-
-
 
 //$temp_file = tempnam(sys_get_temp_dir(), '.xml');
 $temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';
