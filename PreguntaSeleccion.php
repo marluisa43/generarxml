@@ -92,7 +92,7 @@ class PreguntaSeleccion extends ComunPreguntas
         $answernumbering = $xml->createElement('answernumbering',$this->getAnswernumbering());
         $question->appendChild($answernumbering);
 
-       $xml=$this->feedbackresposta($xml);
+        $xml=$this->feedbackresposta($xml);
 
         // Añadir las preguntas con sus feedbacks
         $xml=$this->createAnswer($xml);

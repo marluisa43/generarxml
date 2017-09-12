@@ -1,9 +1,10 @@
 <?php
+require_once("BeginXml.php");
 require_once("PreguntaCorta.php");
 require_once("Answer.php");
 require_once("PreguntaSeleccion.php");
-require_once("Hint.php");
-require_once("BeginXml.php");
+require_once("PreguntaGapselect.php");
+require_once("Selectoption.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -51,7 +52,7 @@ $answers=$preguntaCorta->getAnswers();
 $xml=$preguntaCorta->createAnswer($xml);*/
 // Fin pregunta corta
 
-
+/* ----------------------------------------------------------------- */
 /*
  * Probar pregunta multichoice
  *
@@ -79,7 +80,7 @@ $preguntaSeleccion->setTextIncorrectfeedback('Tienes que estudiar más.');
 $answer= new Answer();
 $answer->setAttriFraction("50");
 $answer->setAttriFormat("html");
-$answer->setText('<![CDATA[<p>Primera Elección</p>]]>');
+$answer->setText('<![CDATA[<p><img src="@@PLUGINFILE@@/violade.jpg" alt="" width="157" height="340" role="presentation" class="img-responsive atto_image_button_text-bottom"><br></p>]]>');
 $answer->setTextfeedback('<![CDATA[<p>retroalimentación de primera elección.</p>]]>');
 $answers[]=$answer;
 unset($answer);
@@ -124,6 +125,90 @@ $preguntaSeleccion->setHints($hints);
 
 // Llamamos para construir el xml correspondiente a esta pregunta.
 $xml=$preguntaSeleccion->createMultiChoice($xml);
+
+
+/* ------------------------------------------ */
+// Probar pregunta espacios en blanco.
+/*$preguntaGapSelect=new PreguntaGapselect($inicioXml->getRoot());
+$selectoption= new Selectoption();
+
+// Rellenamos con los datos de la pregunta.
+$preguntaGapSelect->setName("Pregunta de selección de palabras perdidas");
+$preguntaGapSelect->setQuestiontext(html_entity_decode(htmlentities('<![CDATA[<p>Enunciado de rellenar espacios en blanco [[1]]</p><p>Enunciado de rellenar [[4]]</p>]]>')));
+$preguntaGapSelect->setGeneralfeedback('<![CDATA[<p>Retroalimentación de espacios en blanco.</p>]]>');
+$preguntaGapSelect->setDefaultgrade(1.0000000);
+$preguntaGapSelect->setPenalty(0.3333333);
+$preguntaGapSelect->setHidden(false);
+$preguntaGapSelect->setShuffleanswers(true);
+
+$preguntaGapSelect->setTextCorrectfeedback('Esta genial');
+$preguntaGapSelect->setTextPartiallycorrectfeedback('Esta parcialmente correcto');
+$preguntaGapSelect->setTextIncorrectfeedback('Tienes que estudiar más.');
+
+$preguntaGapSelect->setShownumcorrect(true);
+
+// Rellenamos con los valores de los espacios en blanco.
+$selectoption= new Selectoption();
+$selectoption->setText("Blanco");
+$selectoption->setGroup(1);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+$selectoption= new Selectoption();
+$selectoption->setText("Amarillo");
+$selectoption->setGroup(1);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+$selectoption= new Selectoption();
+$selectoption->setText("Negro");
+$selectoption->setGroup(1);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+$selectoption= new Selectoption();
+$selectoption->setText("Rosa");
+$selectoption->setGroup(2);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+$selectoption= new Selectoption();
+$selectoption->setText("Azul");
+$selectoption->setGroup(2);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+$selectoption= new Selectoption();
+$selectoption->setText("Verde");
+$selectoption->setGroup(2);
+$selectoptions[]=$selectoption;
+unset($selectoption);
+
+// Asignamos las selecciones a la pregunta
+$preguntaGapSelect->setSelectoptions($selectoptions);
+
+// Creamos pistas
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 1</p>]]>");
+$hint->setShownumcorrect(true);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 2</p>]]>");
+$hint->setShownumcorrect(false);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+// Asignamos las pistas a la pregunta
+$preguntaGapSelect->setHints($hints);
+
+// Llamamos para construir el xml correspondiente a esta pregunta.
+$xml=$preguntaGapSelect->createGapselect($xml);
+*/
 
 //$temp_file = tempnam(sys_get_temp_dir(), '.xml');
 $temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';
