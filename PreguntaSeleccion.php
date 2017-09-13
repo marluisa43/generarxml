@@ -2,6 +2,7 @@
 require_once('Answer.php');
 require_once('ComunPreguntas.php');
 
+
 class PreguntaSeleccion extends ComunPreguntas
 {
 
@@ -115,6 +116,8 @@ class PreguntaSeleccion extends ComunPreguntas
             $text=$xml->createElement('text',$answer->getText());
             $answernodo->appendChild($text);
 
+            $xml = $this->insertImage($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
+            $xml = $this->insertSon($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
 
             $feedback = $xml->createElement('feedback');
             $feedback = $answernodo->appendChild($feedback);

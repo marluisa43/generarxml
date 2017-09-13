@@ -272,8 +272,11 @@ class ComunPreguntas
         $enum=$xml->createElement('questiontext');
         $enum=$question->appendChild($enum);
         $enum->setAttribute('format','html');
+
         $text=$xml->createElement('text',$this->getQuestiontext());
         $enum->appendChild($text);
+        $xml = $this->insertImage($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
+        $xml = $this->insertSon($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
 
         if(!is_null($this->getGeneralfeedback())){
             // Rellenamos la retroalimentación general de la pregunta.
@@ -360,4 +363,79 @@ class ComunPreguntas
         }
         return $xml;
     }
+
+    /*
+     * Inserta las imagenes que están en la ristra
+     *
+     *
+     */
+    public function insertImage($xml,$answernodo,$ristra,$ruta){
+        $text = $ristra;
+        $images = array();
+
+        // Nuestra expresión regular, que busca los src dentro
+        // de las etiquetas <img/>
+        // y que no tenga en cuenta mayusculas o minusculas
+        $re_extractImages='/< *img[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<img ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $images=$matches[1];
+            $posicion= strpos($text,'<img src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<img src=');
+        }
+
+        $images = array_reverse($images);
+        foreach($images as $image){
+
+            $im = file_get_contents($ruta.'/'.substr($image,15));
+            $imgBase64 = base64_encode($im);
+
+            $file = $xml->createElement('file',$imgBase64);
+            $answernodo->appendChild($file);
+            $file->setAttribute('name',substr($image,15));
+            $file->setAttribute('path','/');
+            $file->setAttribute('encoding',"base64");
+        }
+        return ($xml);
+    }
+
+
+
+    public function insertSon($xml,$answernodo,$ristra,$ruta){
+        $text = $ristra;
+        $sons = array();
+
+        // Nuestra expresión regular, que busca los src dentro
+        // de las etiquetas <img/>
+        // y que no tenga en cuenta mayusculas o minusculas
+        $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<source ');
+
+        while ($valor) {
+            preg_match_all( $re_extractSons  , $text , $matches);
+            $sons=$matches[1];
+            $posicion= strpos($text,'<source src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<source src=');
+        }
+
+        $sons = array_reverse($sons);
+        foreach($sons as $son){
+            $sn = file_get_contents($ruta.'/'.substr($son,15));
+            $sonBase64 = base64_encode($sn);
+
+            $file = $xml->createElement('file',$sonBase64);
+            $answernodo->appendChild($file);
+            $file->setAttribute('name',substr($son,15));
+            $file->setAttribute('path','/');
+            $file->setAttribute('encoding',"base64");
+        }
+        return ($xml);
+    }
+
 }

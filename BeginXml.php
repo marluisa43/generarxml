@@ -6,6 +6,7 @@ class BeginXml{
     private $cabecera;
     private $category;
     private $root;
+    private static $ruta;
 
 
     /**
@@ -65,6 +66,24 @@ class BeginXml{
     {
         $this->root = $root;
     }
+
+    /**
+     * @return mixed
+     */
+    public static function getRuta()
+    {
+        return self::$ruta;
+    }
+
+    /**
+     * @param mixed $ruta
+     */
+    public static function setRuta($ruta)
+    {
+        self::$ruta = $ruta;
+    }
+
+
 
 
     /**
