@@ -19,7 +19,7 @@ class PreguntaDescription extends ComunPreguntas
     /**
      * @param $xml
      * @return mixed
-     * Devuelve la cabecera de pregunta corta.
+     * Devuelve la pregunta descripcion.
      */
     public function createDescription($xml){
 
