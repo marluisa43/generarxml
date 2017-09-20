@@ -5,6 +5,7 @@ require_once("Answer.php");
 require_once("PreguntaSeleccion.php");
 require_once("PreguntaGapselect.php");
 require_once("Selectoption.php");
+require_once("PreguntaDescription.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -14,8 +15,14 @@ $inicioXml->setRuta("/var/www/html/imagenes");
 
 $xml=$inicioXml->getInicioXML();
 
-// Probar pregunta corta.
-$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
+
+/* ----------------------------------------------------------------- */
+/*
+ * Probar pregunta corta
+ *
+ *
+ */
+/*$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 
 // Rellenamos la pregunta con los datos
 $preguntaCorta->setName("Respuesta corta");
@@ -67,7 +74,7 @@ $preguntaCorta->setHints($hints);
 
 
 // Llamamos para construir el xml correspondiente a esta pregunta.
-$xml=$preguntaCorta->createShortanswer($xml);
+$xml=$preguntaCorta->createShortanswer($xml);*/
 
 
 // Fin pregunta corta
@@ -152,6 +159,9 @@ $xml=$preguntaSeleccion->createMultiChoice($xml);*/
 
 /* ------------------------------------------ */
 // Probar pregunta espacios en blanco.
+
+
+
 /*$preguntaGapSelect=new PreguntaGapselect($inicioXml->getRoot());
 $selectoption= new Selectoption();
 
@@ -232,6 +242,20 @@ $preguntaGapSelect->setHints($hints);
 // Llamamos para construir el xml correspondiente a esta pregunta.
 $xml=$preguntaGapSelect->createGapselect($xml);*/
 
+
+//-----------------------------------
+/*
+ * Probamos preguntas de descripción
+ *
+ */
+$preguntaDescription=new PreguntaDescription($inicioXml->getRoot());
+
+// Rellenamos con los datos de la pregunta.
+$preguntaDescription->setName("Pregunta de Descripción");
+$preguntaDescription->setQuestiontext('<![CDATA[<p>Enunciado de descripción.</p>]]>');
+$preguntaDescription->setGeneralfeedback('<![CDATA[<p>Segunda Elección</p><p>&nbsp;<video controls="true"><source src="@@PLUGINFILE@@/13.Bars i restaurants.mp4">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>');
+
+$xml=$preguntaDescription->createDescription($xml);
 
 
 

@@ -283,7 +283,11 @@ class ComunPreguntas
             $generalfeedback=$xml->createElement('generalfeedback');
             $generalfeedback=$question->appendChild($generalfeedback);
             $generalfeedback->setAttribute('format','html');
-            $xml->createElement('text',$this->getGeneralfeedback());
+            $text=$xml->createElement('text',$this->getGeneralfeedback());
+            $generalfeedback->appendChild($text);
+            $xml = $this->insertImage($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
+            $xml = $this->insertSon($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
+
         }
 
         if($this->getDefaultgrade()!=0){
