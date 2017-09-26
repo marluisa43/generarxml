@@ -6,6 +6,7 @@ require_once("PreguntaSeleccion.php");
 require_once("PreguntaGapselect.php");
 require_once("Selectoption.php");
 require_once("PreguntaDescription.php");
+require_once("PreguntaCloze.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -248,16 +249,69 @@ $xml=$preguntaGapSelect->createGapselect($xml);*/
  * Probamos preguntas de descripción
  *
  */
-$preguntaDescription=new PreguntaDescription($inicioXml->getRoot());
+/*$preguntaDescription=new PreguntaDescription($inicioXml->getRoot());
 
 // Rellenamos con los datos de la pregunta.
 $preguntaDescription->setName("Pregunta de Descripción");
 $preguntaDescription->setQuestiontext('<![CDATA[<p>Enunciado de descripción.</p>]]>');
 $preguntaDescription->setGeneralfeedback('<![CDATA[<p>Segunda Elección</p><p>&nbsp;<video controls="true"><source src="@@PLUGINFILE@@/13.Bars i restaurants.mp4">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>');
 
-$xml=$preguntaDescription->createDescription($xml);
+$xml=$preguntaDescription->createDescription($xml);*/
+// Fin pregunta descripcion
 
 
+//---------------------------------
+/*
+ * Probamos la pregunta cloze
+ *
+ */
+/*$preguntaCloze = new PreguntaCloze($inicioXml->getRoot());
+
+// Rellenamos con los datos de la pregunta.
+$preguntaCloze->setName("pregunta close");
+$preguntaCloze->setQuestiontext('<![CDATA[<p>De que color es el caballo blanco de santiago {1:MULTICHOICE:rojo~%100%blanco~negro} y que color es el mejor {1:SHORTANSWER:=rojo}</p><p><br></p>]]>');
+$preguntaCloze->setGeneralfeedback('<![CDATA[<p>retroalimentación genereral de close</p>]]>');
+$preguntaCloze->setPenalty(0.3333333);
+$preguntaCloze->setHidden(false);
+
+// Creamos pistas
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 1</p>]]>");
+$hint->setShownumcorrect(true);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 2</p>]]>");
+$hint->setShownumcorrect(false);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+// Asignamos las pistas a la pregunta
+$preguntaCloze->setHints($hints);
+$xml=$preguntaCloze->createCloze($xml);*/
+
+// ---------------------------------------------------------
+/*
+ * Creamos pregunta orden
+ */
+$preguntaOrden = new PreguntaOrden($inicioXml->getRoot());
+
+$preguntaOrden->setName("Nombre de pregunta de poner en orden");
+$preguntaOrden->setQuestiontext("<![CDATA[<p>Enunciado de la pregunta poner en orden</p>]]>");
+$preguntaOrden->setGeneralfeedback("<![CDATA[<p>Retroalimentación general</p>]]>");
+$preguntaOrden->setDefaultgrade(1.0000000);
+$preguntaOrden->setPenalty(0.3333333);
+$preguntaOrden->setHidden(false);
+$preguntaOrden->setLayouttype('VERTICAL');
+
+
+//----------------------------------------------
+
+// Genera el fichero xml
 
 //$temp_file = tempnam(sys_get_temp_dir(), '.xml');
 $temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';

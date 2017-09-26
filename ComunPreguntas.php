@@ -370,7 +370,7 @@ class ComunPreguntas
 
     /*
      * Inserta las imagenes que están en la ristra
-     *
+     * para la pregunta $answernodo
      *
      */
     public function insertImage($xml,$answernodo,$ristra,$ruta){
