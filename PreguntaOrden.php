@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: msuarez
- * Date: 21/09/17
- * Time: 12:42
- */
+require_once("Answer.php");
+require_once("ComunPreguntas.php");
 
 class PreguntaOrden extends ComunPreguntas
 {
@@ -13,6 +9,7 @@ class PreguntaOrden extends ComunPreguntas
     private $selectcount;
     private $gradingtype;
     private $showgrading;
+    private $answers=array();
 
     /**
      * @return mixed
@@ -94,6 +91,22 @@ class PreguntaOrden extends ComunPreguntas
         $this->showgrading = $showgrading;
     }
 
+    /**
+     * @return array
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * @param array $answers
+     */
+    public function setAnswers($answers)
+    {
+        $this->answers = $answers;
+    }
+
 
 
     /**
@@ -104,6 +117,7 @@ class PreguntaOrden extends ComunPreguntas
         $this->setType('ordering');
         parent::__construct($root);
     }
+
 
 
     /**
@@ -125,22 +139,26 @@ class PreguntaOrden extends ComunPreguntas
         $selecttype = $xml->createElement('selecttype',$this->getSelecttype());
         $question->appendChild($selecttype);
         // Numeros de opciones cuando la pregunta aparece en un cuestionario
-        $selectcount = $xml->createElement('selectcount',$this->getSelecttype());
+        $selectcount = $xml->createElement('selectcount',$this->getSelectcount());
         $question->appendChild($selectcount);
         // Elije como se corrije
-        $gradingtype = $xml->createElement('gradingtype',$this->getSelecttype());
+        $gradingtype = $xml->createElement('gradingtype',$this->getGradingtype());
         $question->appendChild($gradingtype);
         // Elije si se muestra u oculta los detalles en el calculo de la puntuación cuando un estudiante
         // revisa las respuestas de este tipo de pregunta.
-        $showgrading = $xml->createElement('showgrading',$this->getSelecttype());
+        $showgrading = $xml->createElement('showgrading',$this->getShowgrading());
         $question->appendChild($showgrading);
+
+
 
         // Añadimos los feedbacks
         $xml=$this->feedbackresposta($xml);
 
-
         // Añadir las preguntas
         $xml=$this->createAnswer($xml);
+
+        // Añadir las pistas
+        $xml=$this->createHint($xml);
 
         return $xml;
     }

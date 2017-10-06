@@ -5,8 +5,8 @@ require_once("Answer.php");
 require_once("PreguntaSeleccion.php");
 require_once("PreguntaGapselect.php");
 require_once("Selectoption.php");
-require_once("PreguntaDescription.php");
 require_once("PreguntaCloze.php");
+require_once ("PreguntaOrden.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -307,6 +307,73 @@ $preguntaOrden->setDefaultgrade(1.0000000);
 $preguntaOrden->setPenalty(0.3333333);
 $preguntaOrden->setHidden(false);
 $preguntaOrden->setLayouttype('VERTICAL');
+$preguntaOrden->setSelecttype('ALL');
+$preguntaOrden->setSelectcount('0');
+$preguntaOrden->setGradingtype('ALL_OR_NOTHING');
+$preguntaOrden->setShowgrading('SHOW');
+
+$preguntaOrden->setTextCorrectfeedback('Esta genial');
+$preguntaOrden->setTextPartiallycorrectfeedback('Esta parcialmente correcto');
+$preguntaOrden->setTextIncorrectfeedback('Tienes que estudiar más.');
+
+
+// Creamos las contestaciones posibles.
+$answer= new Answer();
+$answer->setAttriFraction("1.0000000");
+$answer->setAttriFormat("html");
+$answer->setText('<![CDATA[texto 1,&nbsp;<img src="@@PLUGINFILE@@/llaut.jpg" alt="" width="157" height="303" role="presentation" class="img-responsive atto_image_button_text-bottom">]]>');
+$answer->setTextfeedback('');
+$answers[]=$answer;
+unset($answer);
+
+$answer= new Answer();
+$answer->setAttriFraction("2.0000000");
+$answer->setAttriFormat("html");
+$answer->setText('texto 2');
+$answer->setTextfeedback('');
+$answers[]=$answer;
+unset($answer);
+
+$answer= new Answer();
+$answer->setAttriFraction("3.0000000");
+$answer->setAttriFormat("moodle_auto_format");
+$answer->setText('Texto 3');
+$answer->setTextfeedback('');
+$answers[]=$answer;
+unset($answer);
+
+$answer= new Answer();
+$answer->setAttriFraction("4.0000000");
+$answer->setAttriFormat("moodle_auto_format");
+$answer->setText('Texto 4');
+$answer->setTextfeedback('');
+$answers[]=$answer;
+unset($answer);
+
+
+// Asignamos las respuesta a la pregunta
+$preguntaOrden->setAnswers($answers);
+
+// Creamos pistas
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 1</p>]]>");
+$hint->setShownumcorrect(true);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 2</p>]]>");
+$hint->setShownumcorrect(false);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+// Asignamos las pistas a la pregunta
+$preguntaOrden->setHints($hints);
+
+//creamos la pregunta
+$xml=$preguntaOrden->createOrdering($xml);
+
 
 
 //----------------------------------------------
