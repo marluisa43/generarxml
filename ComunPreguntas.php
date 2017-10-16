@@ -290,13 +290,13 @@ class ComunPreguntas
 
         }
 
-        if($this->getDefaultgrade()!=0){
+        if(is_numeric($this->getDefaultgrade())){
             // Rellenamos con el valor de la pregunta por defecto.
             $defaultgrade= $xml->createElement('defaultgrade',$this->getDefaultgrade());
             $question->appendChild($defaultgrade);
         }
 
-        if($this->getPenalty()!=0){
+        if(is_numeric($this->getPenalty())){
             // Rellenamos con la penalización por cada intento incorrecto.
             $penalty = $xml->createElement('penalty',$this->getPenalty());
             $question->appendChild($penalty);

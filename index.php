@@ -6,7 +6,8 @@ require_once("PreguntaSeleccion.php");
 require_once("PreguntaGapselect.php");
 require_once("Selectoption.php");
 require_once("PreguntaCloze.php");
-require_once ("PreguntaOrden.php");
+require_once("PreguntaOrden.php");
+require_once("Ddimageortext.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -298,7 +299,7 @@ $xml=$preguntaCloze->createCloze($xml);*/
 /*
  * Creamos pregunta orden
  */
-$preguntaOrden = new PreguntaOrden($inicioXml->getRoot());
+/*$preguntaOrden = new PreguntaOrden($inicioXml->getRoot());
 
 $preguntaOrden->setName("Nombre de pregunta de poner en orden");
 $preguntaOrden->setQuestiontext("<![CDATA[<p>Enunciado de la pregunta poner en orden</p>]]>");
@@ -372,9 +373,47 @@ unset($hint);
 $preguntaOrden->setHints($hints);
 
 //creamos la pregunta
-$xml=$preguntaOrden->createOrdering($xml);
+$xml=$preguntaOrden->createOrdering($xml);*/
+
+//----------------------------------------------
+/*
+ * Creamos la pregunta de Arrastrar y soltar sobre imagen
+ */
+$preguntaDdimageortext = new Ddimageortext($inicioXml->getRoot());
+
+$preguntaDdimageortext->setName("Nombre de pregunta de arrastrar y soltar sobre una imagen");
+$preguntaDdimageortext->setQuestiontext("<![CDATA[<p>Enunciado de pregunta arrastrar y soltar sobre una imagen</p>]]>");
+$preguntaDdimageortext->setGeneralfeedback("<![CDATA[<p>Retroalimentación general</p>]]>");
+$preguntaDdimageortext->setDefaultgrade(1.0000000);
+$preguntaDdimageortext->setPenalty(0.3333333);
+$preguntaDdimageortext->setHidden(false);
+
+$preguntaDdimageortext->setTextCorrectfeedback('Esta genial');
+$preguntaDdimageortext->setTextPartiallycorrectfeedback('Esta parcialmente correcto');
+$preguntaDdimageortext->setTextIncorrectfeedback('Tienes que estudiar más.');
+
+$preguntaDdimageortext->setBackgroundImage("escaleras moodle.png");
 
 
+// Creamos pistas
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 1</p>]]>");
+$hint->setShownumcorrect(true);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+
+$hint= new Hint();
+$hint->setText("<![CDATA[<p>Pista 2</p>]]>");
+$hint->setShownumcorrect(false);
+$hint->setClearwrong(true);
+$hints[]=$hint;
+unset($hint);
+// Asignamos las pistas a la pregunta
+$preguntaDdimageortext->setHints($hints);
+
+//creamos la pregunta
+$xml=$preguntaDdimageortext->createDdimageortext($xml);
 
 //----------------------------------------------
 
