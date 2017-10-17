@@ -394,6 +394,46 @@ $preguntaDdimageortext->setTextIncorrectfeedback('Tienes que estudiar más.');
 
 $preguntaDdimageortext->setBackgroundImage("escaleras moodle.png");
 
+// Creamos los objetos a mover
+$drag= new Drag();
+$drag->setNo(1);
+$drag->setDraggroup(1);
+$drag->setFile("actively facilitating forums.png");
+$drags[]=$drag;
+unset($drag);
+
+$drag= new Drag();
+$drag->setNo(2);
+$drag->setText("Texto2");
+$drag->setDraggroup(2);
+$drags[]=$drag;
+unset($drag);
+
+// Asignamos las pistas a la pregunta
+$preguntaDdimageortext->setDrags($drags);
+
+// Ponemos donde deben ir los elementos que movemos
+$drop= new Drop();
+$drop->setText("Texto añadido");
+$drop->setNo(1);
+$drop->setChoice(1);
+$drop->setXleft(190);
+$drop->setYtop(143);
+$drops[]=$drop;
+unset($drop);
+
+$drop= new Drop();
+$drop->setText("");
+$drop->setNo(2);
+$drop->setChoice(2);
+$drop->setXleft(179);
+$drop->setYtop(195);
+$drops[]=$drop;
+unset($drop);
+
+// Asignamos los drop a la pregunta
+$preguntaDdimageortext->setDrops($drops);
+
 
 // Creamos pistas
 $hint= new Hint();

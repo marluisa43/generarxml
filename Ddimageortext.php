@@ -1,10 +1,14 @@
 <?php
 require_once("ComunPreguntas.php");
+require_once("Drag.php");
+require_once("Drop.php");
 
 
 class Ddimageortext extends ComunPreguntas
 {
     private $backgroundImage;
+    private $drags=array();
+    private $drops=array();
 
     /**
      * Ddimageortext constructor.
@@ -31,6 +35,39 @@ class Ddimageortext extends ComunPreguntas
         $this->backgroundImage = $backgroundImage;
     }
 
+    /**
+     * @return array
+     */
+    public function getDrags()
+    {
+        return $this->drags;
+    }
+
+    /**
+     * @param array $drags
+     */
+    public function setDrags($drags)
+    {
+        $this->drags = $drags;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDrops()
+    {
+        return $this->drops;
+    }
+
+    /**
+     * @param array $drops
+     */
+    public function setDrops($drops)
+    {
+        $this->drops = $drops;
+    }
+
+
     public function createDdimageortext($xml){
         $this->InitQuestion($xml);
         $question = $this->getQuestion();
@@ -41,8 +78,8 @@ class Ddimageortext extends ComunPreguntas
         $xml=$this->loadBackgroundImage($xml,$question,$this->getBackgroundImage(),BeginXml::getRuta());
 
 
-
-
+        $xml=$this->createDrags($xml,BeginXml::getRuta());
+        $xml=$this->createDrops($xml);
         // Añadir las pistas
         $xml=$this->createHint($xml);
 
@@ -60,4 +97,52 @@ class Ddimageortext extends ComunPreguntas
         return ($xml);
 
     }
+
+    private function createDrags($xml,$ruta){
+        $drags=$this->getDrags();
+        $question = $this->getQuestion();
+
+        foreach ($drags as $drag){
+            $dragnodo=$xml->createElement('drag');
+            $question->appendChild($dragnodo);
+            $no=$xml->createElement('no',$drag->getNo());
+            $dragnodo->appendChild($no);
+            $textet=$xml->createElement('text',$drag->getText());
+            $dragnodo->appendChild($textet);
+            $draggroupet=$xml->createElement('draggroup',$drag->getDraggroup());
+            $dragnodo->appendChild($draggroupet);
+
+            if (!is_null($drag->getFile())){
+                $fileImage=file_get_contents($ruta.'/'.$drag->getFile());
+                $fileImageBase64=base64_encode($fileImage);
+                $fileimg=$xml->createElement('file',$fileImageBase64);
+                $dragnodo->appendChild($fileimg);
+            }
+        }
+        return $xml;
+    }
+
+    private function createDrops($xml){
+        $drops=$this->getDrops();
+        $question = $this->getQuestion();
+
+        foreach ($drops as $drop){
+            $dropnodo=$xml->createElement('drop');
+            $question->appendChild($dropnodo);
+            $text=$xml->createElement('text',$drop->getText());
+            $dropnodo->appendChild($text);
+            $no=$xml->createElement('no',$drop->getNo());
+            $dropnodo->appendChild($no);
+            $choice=$xml->createElement('choice',$drop->getChoice());
+            $dropnodo->appendChild($choice);
+            $xleft=$xml->createElement('xleft',$drop->getXleft());
+            $dropnodo->appendChild($xleft);
+            $ytop=$xml->createElement('ytop',$drop->getYtop());
+            $dropnodo->appendChild($ytop);
+
+        }
+        return $xml;
+    }
+
+
 }
