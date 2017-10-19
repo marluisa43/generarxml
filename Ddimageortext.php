@@ -121,6 +121,9 @@ class Ddimageortext extends ComunPreguntas
                 $fileImageBase64=base64_encode($fileImage);
                 $fileimg=$xml->createElement('file',$fileImageBase64);
                 $dragnodo->appendChild($fileimg);
+                $dragnodo->setAttribute('name',$drag->getFile());
+                $dragnodo->setAttribute('path','/');
+                $dragnodo->setAttribute('encoding',"base64");
             }
         }
         return $xml;
