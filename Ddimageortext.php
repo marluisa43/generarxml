@@ -94,6 +94,10 @@ class Ddimageortext extends ComunPreguntas
 
         $file=$xml->createElement('file',$bgimgBase64);
         $question->appendChild($file);
+        $file->setAttribute('name',$image);
+        $file->setAttribute('path','/');
+        $file->setAttribute('encoding',"base64");
+
         return ($xml);
 
     }

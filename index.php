@@ -99,8 +99,9 @@ $preguntaSeleccion->setQuestiontext('<![CDATA[<p>con sonido&nbsp;</p><p><img src
 //$preguntaSeleccion->setQuestiontext('<![CDATA[<div align="left"><span style="line-height: 115%;"><strong><em>Música i teatre</em></strong></span><span style="line-height: 115%;"> van units des que el teatre va donar les primeres passes. Amb el temps, a Europa primer i estats Units després convisqueren varies formes d’espectacle que inclogueren música. La barreja d’aquests elements del </span><span style="line-height: 115%;"><a href="http://es.wikipedia.org/wiki/Vodevil">Vaudeville</a></span><span style="line-height: 115%;">, </span><span style="line-height: 115%;">l’òpera</span><span style="line-height: 115%;">, </span><span style="line-height: 115%;">l</span><span style="line-height: 115%;">’</span><span style="line-height: 115%;">opereta</span><span style="line-height: 115%;">, </span><span style="line-height: 115%;"><a href="http://es.wikipedia.org/wiki/Melodrama">el melodrama</a></span><span style="line-height: 115%;">, <a href="http://es.wikipedia.org/wiki/Burlesque">la burlesque</a></span><span style="line-height: 115%;">, </span><span style="line-height: 115%;">la revue</span><span style="line-height: 115%;"> i </span><span style="line-height: 115%;"><a href="http://www.sedajazz.es/agenda/evento.php?mes=03&amp;anyo=2009&amp;id=4288">El minstrel</a></span><span style="line-height: 115%;"> va generar “la COMEDIA MUSICAL” i que avui en dia coneixem com a “MUSICAL”, desenvolupat al llarg del segle XIX i principis del XX.</span> </div> <p align="justify"> </p> <p align="center"><u><em>DUES HORES DE BROADWAY EN 10 MINUTS</em></u> </p> <p align="center"> <object height="344" width="425"> <param name="movie" value="http://www.youtube.com/v/bvfP3rL6gUE&amp;hl=es_ES&amp;fs=1&amp;color1=0x5d1719&amp;color2=0xcd311b" /> <param name="allowFullScreen" value="true" /> <param name="allowscriptaccess" value="always" /> <embed src="http://www.youtube.com/v/bvfP3rL6gUE&amp;hl=es_ES&amp;fs=1&amp;color1=0x5d1719&amp;color2=0xcd311b" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" height="344" width="425" /> </object> </p>]]>');
 
 $preguntaSeleccion->setGeneralfeedback('<![CDATA[<p>Retroalimentación General de respuesta multichoice</p>]]>');
-
+// si se pone false Single, es multirespuesta, si pones true es solo una respuesta
 $preguntaSeleccion->setSingle(false);
+// Shuffleanswers es true si barajas las respuesta, sino es false
 $preguntaSeleccion->setShuffleanswers(true);
 $preguntaSeleccion->setAnswernumbering('abc');
 $preguntaSeleccion->setTextCorrectfeedback('Esta genial');
@@ -460,16 +461,30 @@ $xml=$preguntaDdimageortext->createDdimageortext($xml);
 // Genera el fichero xml
 
 //$temp_file = tempnam(sys_get_temp_dir(), '.xml');
-$temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';
+/*$temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';
 //$xml_string=$xml->save($temp_file);
+$xml_string = $xml->saveXML();
+$xml_string = htmlspecialchars_decode ($xml_string);
+$fp = fopen($temp_file, "w");
+fputs($fp, $xml_string);
+fclose($fp);*/
+
+
+// Con esto fuerzo la descarga.
+/*header("Content-Disposition: attachment; filename=\"" . $temp_file . "\";" );
+header('Content-Type: text/xml');
+readfile($temp_file);*/
+
+// Victor quiere que se guarde sin preguntar nada
+$carpeta = 'xmlDescargados';
+if (!file_exists($carpeta)) {
+    mkdir($carpeta, 0777, true);
+}
+
+$temp_file = tempnam($carpeta,"TMP0");
 $xml_string = $xml->saveXML();
 $xml_string = htmlspecialchars_decode ($xml_string);
 $fp = fopen($temp_file, "w");
 fputs($fp, $xml_string);
 fclose($fp);
 
-
-// Con esto fuerzo la descarga.
-header("Content-Disposition: attachment; filename=\"" . $temp_file . "\";" );
-header('Content-Type: text/xml');
-readfile($temp_file);
