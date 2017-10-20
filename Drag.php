@@ -7,6 +7,8 @@ class Drag
     private $text;
     private $draggroup;
     private $file;
+    private $width;
+    private $height;
 
     /**
      * @return mixed
@@ -70,6 +72,38 @@ class Drag
     public function setFile($file)
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    /**
+     * @param mixed $width
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param mixed $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
     }
 
 

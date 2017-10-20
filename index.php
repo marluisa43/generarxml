@@ -400,6 +400,8 @@ $drag= new Drag();
 $drag->setNo(1);
 $drag->setDraggroup(1);
 $drag->setFile("actively facilitating forums.png");
+$drag->setWidth(100);
+$drag->setHeight(200);
 $drags[]=$drag;
 unset($drag);
 
@@ -455,6 +457,7 @@ $preguntaDdimageortext->setHints($hints);
 
 //creamos la pregunta
 $xml=$preguntaDdimageortext->createDdimageortext($xml);
+
 
 //----------------------------------------------
 

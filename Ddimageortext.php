@@ -117,6 +117,7 @@ class Ddimageortext extends ComunPreguntas
             $dragnodo->appendChild($draggroupet);
 
             if (!is_null($drag->getFile())){
+                $this->redimensionarImage($ruta,$drag->getFile(),$drag->getWidth(),$drag->getHeight());
                 $fileImage=file_get_contents($ruta.'/'.$drag->getFile());
                 $fileImageBase64=base64_encode($fileImage);
                 $fileimg=$xml->createElement('file',$fileImageBase64);
@@ -151,5 +152,38 @@ class Ddimageortext extends ComunPreguntas
         return $xml;
     }
 
+    private function redimensionarImage($ruta,$image,$width,$height){
+        $imageR=$ruta.'/'.$image;
+        switch (exif_imagetype($imageR)){
+            case IMAGETYPE_BMP:
+                $recourseImage=imagecreatefromwbmp($imageR);
+                break;
+            case IMAGETYPE_JPEG:
+                $recourseImage=imagecreatefromjpeg($imageR);
+                break;
+            case IMAGETYPE_PNG:
+                $recourseImage=imagecreatefrompng($imageR);
+                break;
+            case IMAGETYPE_GIF:
+                $recourseImage=imagecreatefromgif($imageR);
+                break;
+        }
+
+        $imageNew = imagescale($recourseImage,$width,$height);
+        switch (exif_imagetype($imageR)){
+            case IMAGETYPE_BMP:
+                imagewbmp($imageNew,$imageR);
+                break;
+            case IMAGETYPE_JPEG:
+                imagejpeg($imageNew,$imageR);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($imageNew,$imageR);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($imageNew,$imageR);
+                break;
+        }
+    }
 
 }
