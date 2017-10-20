@@ -7,8 +7,8 @@ require_once("Drop.php");
 class Ddimageortext extends ComunPreguntas
 {
     private $backgroundImage;
-    private $width;
-    private $height;
+    private $widthBackgroundImage;
+    private $heightBackgroundImage;
     private $drags=array();
     private $drops=array();
 
@@ -72,7 +72,7 @@ class Ddimageortext extends ComunPreguntas
     /**
      * @return mixed
      */
-    public function getWidth()
+    public function getWidthBackgroundImage()
     {
         return $this->width;
     }
@@ -80,7 +80,7 @@ class Ddimageortext extends ComunPreguntas
     /**
      * @param mixed $width
      */
-    public function setWidth($width)
+    public function setWidthBackgroundImage($width)
     {
         $this->width = $width;
     }
@@ -88,7 +88,7 @@ class Ddimageortext extends ComunPreguntas
     /**
      * @return mixed
      */
-    public function getHeight()
+    public function getHeightBackgroundImage()
     {
         return $this->height;
     }
@@ -96,7 +96,7 @@ class Ddimageortext extends ComunPreguntas
     /**
      * @param mixed $height
      */
-    public function setHeight($height)
+    public function setHeightBackgroundImage($height)
     {
         $this->height = $height;
     }
@@ -123,7 +123,7 @@ class Ddimageortext extends ComunPreguntas
     }
 
     private function loadBackgroundImage ($xml,$question,$image,$ruta){
-        $this->redimensionarImage($ruta,$image,$this->getWidth(),$this->getHeight());
+        $this->redimensionarImage($ruta,$image,$this->getWidthBackgroundImage(),$this->getHeightBackgroundImage());
 
         $bgimg=file_get_contents($ruta.'/'.$image);
         $bgimgBase64=base64_encode($bgimg);
