@@ -393,16 +393,19 @@ class ComunPreguntas
         }
 
         $images = array_reverse($images);
-        foreach($images as $image){
+        foreach($images as $image) {
+            if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
+                echo($image);
+                $im = file_get_contents($ruta . '/' . substr($image, 15));
+                $imgBase64 = base64_encode($im);
 
-            $im = file_get_contents($ruta.'/'.substr($image,15));
-            $imgBase64 = base64_encode($im);
+                $file = $xml->createElement('file', $imgBase64);
+                $answernodo->appendChild($file);
+                $file->setAttribute('name', substr($image, 15));
+                $file->setAttribute('path', '/');
+                $file->setAttribute('encoding', "base64");
+            }
 
-            $file = $xml->createElement('file',$imgBase64);
-            $answernodo->appendChild($file);
-            $file->setAttribute('name',substr($image,15));
-            $file->setAttribute('path','/');
-            $file->setAttribute('encoding',"base64");
         }
         return ($xml);
     }

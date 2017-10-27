@@ -24,11 +24,11 @@ $xml=$inicioXml->getInicioXML();
  *
  *
  */
-/*$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
+$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 
 // Rellenamos la pregunta con los datos
 $preguntaCorta->setName("Respuesta corta");
-$preguntaCorta->setQuestiontext("<![CDATA[<p>con sonido&nbsp;</p><p><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"></p><p>&nbsp;<audio controls=\"true\"><source src=\"@@PLUGINFILE@@/008698998_prev.mp3\">@@PLUGINFILE@@/008698998_prev.mp3</audio>&nbsp;<br></p><p>&nbsp;<video controls=\"true\"><source src=\"@@PLUGINFILE@@/13.Bars i restaurants.mp4\">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>");
+$preguntaCorta->setQuestiontext("<![CDATA[<p> con enlace <img src=\"http://www.xtec.es/~aribas4/llengua/dialectologia/imatges/pa%EFsos%20catalans%202.jpg\" border=\"0\" alt=\"TEXTalt\" width=\"215\" height=\"314\"/> ,con sonido&nbsp;</p><p><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"></p><p>&nbsp;<audio controls=\"true\"><source src=\"@@PLUGINFILE@@/008698998_prev.mp3\">@@PLUGINFILE@@/008698998_prev.mp3</audio>&nbsp;<br></p><p>&nbsp;<video controls=\"true\"><source src=\"@@PLUGINFILE@@/13.Bars i restaurants.mp4\">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>");
 $preguntaCorta->setType("shortanswer");
 $preguntaCorta->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta corta</p>]]>");
 $preguntaCorta->setDefaultgrade(1.0000000);
@@ -76,7 +76,7 @@ $preguntaCorta->setHints($hints);
 
 
 // Llamamos para construir el xml correspondiente a esta pregunta.
-$xml=$preguntaCorta->createShortanswer($xml);*/
+$xml=$preguntaCorta->createShortanswer($xml);
 
 
 // Fin pregunta corta
@@ -380,7 +380,7 @@ $xml=$preguntaOrden->createOrdering($xml);*/
 /*
  * Creamos la pregunta de Arrastrar y soltar sobre imagen
  */
-$preguntaDdimageortext = new Ddimageortext($inicioXml->getRoot());
+/*$preguntaDdimageortext = new Ddimageortext($inicioXml->getRoot());
 
 $preguntaDdimageortext->setName("Nombre de pregunta de arrastrar y soltar sobre una imagen");
 $preguntaDdimageortext->setQuestiontext("<![CDATA[<p>Enunciado de pregunta arrastrar y soltar sobre una imagen</p>]]>");
@@ -455,10 +455,10 @@ $hint->setClearwrong(true);
 $hints[]=$hint;
 unset($hint);
 // Asignamos las pistas a la pregunta
-$preguntaDdimageortext->setHints($hints);
+$preguntaDdimageortext->setHints($hints);*/
 
 //creamos la pregunta
-$xml=$preguntaDdimageortext->createDdimageortext($xml);
+//$xml=$preguntaDdimageortext->createDdimageortext($xml);
 
 
 //----------------------------------------------
