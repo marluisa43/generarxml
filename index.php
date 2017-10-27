@@ -394,8 +394,8 @@ $preguntaDdimageortext->setTextPartiallycorrectfeedback('Esta parcialmente corre
 $preguntaDdimageortext->setTextIncorrectfeedback('Tienes que estudiar más.');
 
 $preguntaDdimageortext->setBackgroundImage("escaleras moodle.png");
-$preguntaDdimageortext->setHeight(300);
-$preguntaDdimageortext->setWidth(300);
+$preguntaDdimageortext->setHeightBackgroundImage(300);
+$preguntaDdimageortext->setWidthBackgroundImage(300);
 
 // Creamos los objetos a mover
 $drag= new Drag();

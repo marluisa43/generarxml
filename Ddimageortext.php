@@ -153,14 +153,17 @@ class Ddimageortext extends ComunPreguntas
             $dragnodo->appendChild($draggroupet);
 
             if (!is_null($drag->getFile())){
-                $this->redimensionarImage($ruta,$drag->getFile(),$drag->getWidth(),$drag->getHeight());
-                $fileImage=file_get_contents($ruta.'/'.$drag->getFile());
-                $fileImageBase64=base64_encode($fileImage);
-                $fileimg=$xml->createElement('file',$fileImageBase64);
-                $dragnodo->appendChild($fileimg);
-                $fileimg->setAttribute('name',$drag->getFile());
-                $fileimg->setAttribute('path','/');
-                $fileimg->setAttribute('encoding',"base64");
+                if (is_dir($ruta.'/'.$drag->getFile())){
+                    $this->redimensionarImage($ruta,$drag->getFile(),$drag->getWidth(),$drag->getHeight());
+                    $fileImage=file_get_contents($ruta.'/'.$drag->getFile());
+                    $fileImageBase64=base64_encode($fileImage);
+                    $fileimg=$xml->createElement('file',$fileImageBase64);
+                    $dragnodo->appendChild($fileimg);
+                    $fileimg->setAttribute('name',$drag->getFile());
+                    $fileimg->setAttribute('path','/');
+                    $fileimg->setAttribute('encoding',"base64");
+                }
+
             }
         }
         return $xml;
