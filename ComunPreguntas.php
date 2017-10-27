@@ -395,7 +395,6 @@ class ComunPreguntas
         $images = array_reverse($images);
         foreach($images as $image) {
             if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
-                echo($image);
                 $im = file_get_contents($ruta . '/' . substr($image, 15));
                 $imgBase64 = base64_encode($im);
 
