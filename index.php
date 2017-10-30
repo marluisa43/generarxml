@@ -8,15 +8,24 @@ require_once("Selectoption.php");
 require_once("PreguntaCloze.php");
 require_once("PreguntaOrden.php");
 require_once("Ddimageortext.php");
+require_once("Category.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
 $inicioXml = new BeginXml();
-$inicioXml->setCategory("prueba");
+//$inicioXml->setCategory("prueba");
+
+// Obtenemos la categoria
+$categoria = new Category();
+$folder = "mud_up_down_pr_en";
+$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+
+
+// Fin
+
 $inicioXml->setRuta("/var/www/html/imagenes");
 
 $xml=$inicioXml->getInicioXML();
-
 
 /* ----------------------------------------------------------------- */
 /*
@@ -27,8 +36,9 @@ $xml=$inicioXml->getInicioXML();
 $preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 
 // Rellenamos la pregunta con los datos
-$preguntaCorta->setName("Respuesta corta");
-$preguntaCorta->setQuestiontext("<![CDATA[<p> con enlace <img src=\"http://www.xtec.es/~aribas4/llengua/dialectologia/imatges/pa%EFsos%20catalans%202.jpg\" border=\"0\" alt=\"TEXTalt\" width=\"215\" height=\"314\"/> ,con sonido&nbsp;</p><p><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"></p><p>&nbsp;<audio controls=\"true\"><source src=\"@@PLUGINFILE@@/008698998_prev.mp3\">@@PLUGINFILE@@/008698998_prev.mp3</audio>&nbsp;<br></p><p>&nbsp;<video controls=\"true\"><source src=\"@@PLUGINFILE@@/13.Bars i restaurants.mp4\">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>");
+//$preguntaCorta->setName("Respuesta corta");
+//$preguntaCorta->setQuestiontext("<![CDATA[<p> con enlace <img src=\"http://www.xtec.es/~aribas4/llengua/dialectologia/imatges/pa%EFsos%20catalans%202.jpg\" border=\"0\" alt=\"TEXTalt\" width=\"215\" height=\"314\"/> ,con sonido&nbsp;</p><p><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"></p><p>&nbsp;<audio controls=\"true\"><source src=\"@@PLUGINFILE@@/008698998_prev.mp3\">@@PLUGINFILE@@/008698998_prev.mp3</audio>&nbsp;<br></p><p>&nbsp;<video controls=\"true\"><source src=\"@@PLUGINFILE@@/13.Bars i restaurants.mp4\">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>");
+$preguntaCorta->setQuestiontext("<![CDATA[<font face=\"georgia,times new roman,times,serif\"><font size=\"2\">L’accés a l’editor es fa per </font><a href=\"http://www.edu365.com/pls/edu365/edu_sec_plsql_2.login?p_url=index.jsp?page=index\"><font size=\"2\">Internet</font></a><font size=\"2\"> i és necessari autenticar-se com a usuari de l’edu365.com.</font></font>]]>");
 $preguntaCorta->setType("shortanswer");
 $preguntaCorta->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta corta</p>]]>");
 $preguntaCorta->setDefaultgrade(1.0000000);
@@ -486,10 +496,11 @@ if (!file_exists($carpeta)) {
     mkdir($carpeta, 0777, true);
 }
 
-$temp_file = tempnam($carpeta,"TMP0");
+$temp_file = tempnam($carpeta,"TMP0").'.xml';
 $xml_string = $xml->saveXML();
 $xml_string = htmlspecialchars_decode ($xml_string);
 $fp = fopen($temp_file, "w");
 fputs($fp, $xml_string);
 fclose($fp);
+echo("Terminado");
 
