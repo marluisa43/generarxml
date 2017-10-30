@@ -432,14 +432,16 @@ class ComunPreguntas
 
         $sons = array_reverse($sons);
         foreach($sons as $son){
-            $sn = file_get_contents($ruta.'/'.substr($son,15));
-            $sonBase64 = base64_encode($sn);
+            if (substr($son, 0, 15) == '@@PLUGINFILE@@/') {
+                $sn = file_get_contents($ruta.'/'.substr($son,15));
+                $sonBase64 = base64_encode($sn);
 
-            $file = $xml->createElement('file',$sonBase64);
-            $answernodo->appendChild($file);
-            $file->setAttribute('name',substr($son,15));
-            $file->setAttribute('path','/');
-            $file->setAttribute('encoding',"base64");
+                $file = $xml->createElement('file',$sonBase64);
+                $answernodo->appendChild($file);
+                $file->setAttribute('name',substr($son,15));
+                $file->setAttribute('path','/');
+                $file->setAttribute('encoding',"base64");
+            }
         }
         return ($xml);
     }
