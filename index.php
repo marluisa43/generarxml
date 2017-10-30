@@ -36,9 +36,11 @@ $xml=$inicioXml->getInicioXML();
 $preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 
 // Rellenamos la pregunta con los datos
-//$preguntaCorta->setName("Respuesta corta");
+$preguntaCorta->setName("Respuesta corta");
 //$preguntaCorta->setQuestiontext("<![CDATA[<p> con enlace <img src=\"http://www.xtec.es/~aribas4/llengua/dialectologia/imatges/pa%EFsos%20catalans%202.jpg\" border=\"0\" alt=\"TEXTalt\" width=\"215\" height=\"314\"/> ,con sonido&nbsp;</p><p><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"></p><p>&nbsp;<audio controls=\"true\"><source src=\"@@PLUGINFILE@@/008698998_prev.mp3\">@@PLUGINFILE@@/008698998_prev.mp3</audio>&nbsp;<br></p><p>&nbsp;<video controls=\"true\"><source src=\"@@PLUGINFILE@@/13.Bars i restaurants.mp4\">@@PLUGINFILE@@/13.Bars i restaurants.mp4</video>&nbsp;<br></p>]]>");
-$preguntaCorta->setQuestiontext("<![CDATA[<font face=\"georgia,times new roman,times,serif\"><font size=\"2\">L’accés a l’editor es fa per </font><a href=\"http://www.edu365.com/pls/edu365/edu_sec_plsql_2.login?p_url=index.jsp?page=index\"><font size=\"2\">Internet</font></a><font size=\"2\"> i és necessari autenticar-se com a usuari de l’edu365.com.</font></font>]]>");
+//$preguntaCorta->setQuestiontext("<![CDATA[<font face=\"georgia,times new roman,times,serif\"><font size=\"2\">L’accés a l’editor es fa per </font><a href=\"http://www.edu365.com/pls/edu365/edu_sec_plsql_2.login?p_url=index.jsp?page=index\"><font size=\"2\">Internet</font></a><font size=\"2\"> i és necessari autenticar-se com a usuari de l’edu365.com.</font></font>]]>");
+
+$preguntaCorta->setQuestiontext("<![CDATA[­<br> <center> <object height=\"355\" width=\"425\"> <param name=\"movie\" value=\"http://www.youtube.com/v/zfH9DhbFjdE&rel=1\" /> <param name=\"wmode\" value=\"transparent\" /> <embed src=\"http://www.youtube.com/v/zfH9DhbFjdE&rel=1\" type=\"application/x-shockwave-flash\" wmode=\"transparent\" height=\"355\" width=\"425\" />­ </object> </center>]]>");
 $preguntaCorta->setType("shortanswer");
 $preguntaCorta->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta corta</p>]]>");
 $preguntaCorta->setDefaultgrade(1.0000000);

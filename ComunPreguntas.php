@@ -91,7 +91,7 @@ class ComunPreguntas
      */
     public function setQuestiontext($questiontext)
     {
-        $this->questiontext = $questiontext;
+        $this->questiontext = htmlspecialchars($questiontext);
     }
 
     /**
