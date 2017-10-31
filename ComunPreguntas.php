@@ -107,7 +107,7 @@ class ComunPreguntas
      */
     public function setGeneralfeedback($generalfeedback)
     {
-        $this->generalfeedback = $generalfeedback;
+        $this->generalfeedback = htmlspecialchars($generalfeedback);
     }
 
     /**
@@ -187,7 +187,7 @@ class ComunPreguntas
      */
     public function setTextCorrectfeedback($textCorrectfeedback)
     {
-        $this->textCorrectfeedback = $textCorrectfeedback;
+        $this->textCorrectfeedback = htmlspecialchars($textCorrectfeedback);
     }
 
     /**
@@ -203,7 +203,7 @@ class ComunPreguntas
      */
     public function setTextPartiallycorrectfeedback($textPartiallycorrectfeedback)
     {
-        $this->textPartiallycorrectfeedback = $textPartiallycorrectfeedback;
+        $this->textPartiallycorrectfeedback = htmlspecialchars($textPartiallycorrectfeedback);
     }
 
     /**
@@ -219,7 +219,7 @@ class ComunPreguntas
      */
     public function setTextIncorrectfeedback($textIncorrectfeedback)
     {
-        $this->textIncorrectfeedback = $textIncorrectfeedback;
+        $this->textIncorrectfeedback = htmlspecialchars($textIncorrectfeedback);
     }
 
     /**
