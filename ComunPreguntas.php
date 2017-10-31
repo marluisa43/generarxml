@@ -376,7 +376,7 @@ class ComunPreguntas
     public function insertImage($xml,$answernodo,$ristra,$ruta){
         $text = $ristra;
         $images = array();
-
+        $text = htmlspecialchars_decode($text);
         // Nuestra expresión regular, que busca los src dentro
         // de las etiquetas <img/>
         // y que no tenga en cuenta mayusculas o minusculas
@@ -393,6 +393,7 @@ class ComunPreguntas
         }
 
         $images = array_reverse($images);
+
         foreach($images as $image) {
             if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
                 $im = file_get_contents($ruta . '/' . substr($image, 15));
@@ -414,7 +415,7 @@ class ComunPreguntas
     public function insertSon($xml,$answernodo,$ristra,$ruta){
         $text = $ristra;
         $sons = array();
-
+        $text = htmlspecialchars_decode($text);
         // Nuestra expresión regular, que busca los src dentro
         // de las etiquetas <img/>
         // y que no tenga en cuenta mayusculas o minusculas
