@@ -123,7 +123,7 @@ class Ddimageortext extends ComunPreguntas
     }
 
     private function loadBackgroundImage ($xml,$question,$image,$ruta){
-        if (is_dir($ruta.'/'.$image)){
+        if (is_dir($ruta.'/'.$image) and $image!=""){
             $this->redimensionarImage($ruta,$image,$this->getWidthBackgroundImage(),$this->getHeightBackgroundImage());
 
             $bgimg=file_get_contents($ruta.'/'.$image);
