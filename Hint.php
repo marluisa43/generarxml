@@ -20,7 +20,7 @@ class Hint
      */
     public function setText($text)
     {
-        $this->text = $text;
+        $this->text = htmlspecialchars($text);
     }
 
     /**

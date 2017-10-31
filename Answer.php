@@ -53,7 +53,7 @@ class Answer
      */
     public function setText($text)
     {
-        $this->text = $text;
+        $this->text = htmlspecialchars($text);
     }
 
     /**
@@ -69,7 +69,7 @@ class Answer
      */
     public function setTextfeedback($textfeedback)
     {
-        $this->textfeedback = $textfeedback;
+        $this->textfeedback = htmlspecialchars($textfeedback);
     }
 
 
