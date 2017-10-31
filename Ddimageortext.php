@@ -123,16 +123,19 @@ class Ddimageortext extends ComunPreguntas
     }
 
     private function loadBackgroundImage ($xml,$question,$image,$ruta){
-        $this->redimensionarImage($ruta,$image,$this->getWidthBackgroundImage(),$this->getHeightBackgroundImage());
+        if (is_dir($ruta.'/'.$image)){
+            $this->redimensionarImage($ruta,$image,$this->getWidthBackgroundImage(),$this->getHeightBackgroundImage());
 
-        $bgimg=file_get_contents($ruta.'/'.$image);
-        $bgimgBase64=base64_encode($bgimg);
+            $bgimg=file_get_contents($ruta.'/'.$image);
+            $bgimgBase64=base64_encode($bgimg);
 
-        $file=$xml->createElement('file',$bgimgBase64);
-        $question->appendChild($file);
-        $file->setAttribute('name',$image);
-        $file->setAttribute('path','/');
-        $file->setAttribute('encoding',"base64");
+            $file=$xml->createElement('file',$bgimgBase64);
+            $question->appendChild($file);
+            $file->setAttribute('name',$image);
+            $file->setAttribute('path','/');
+            $file->setAttribute('encoding',"base64");
+        }
+
 
         return ($xml);
 
