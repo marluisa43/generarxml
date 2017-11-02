@@ -396,14 +396,17 @@ class ComunPreguntas
 
         foreach($images as $image) {
             if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
-                $im = file_get_contents($ruta . '/' . substr($image, 15));
-                $imgBase64 = base64_encode($im);
+                if (is_dir($ruta . '/' . substr($image, 15))){
+                    $im = file_get_contents($ruta . '/' . substr($image, 15));
+                    $imgBase64 = base64_encode($im);
 
-                $file = $xml->createElement('file', $imgBase64);
-                $answernodo->appendChild($file);
-                $file->setAttribute('name', substr($image, 15));
-                $file->setAttribute('path', '/');
-                $file->setAttribute('encoding', "base64");
+                    $file = $xml->createElement('file', $imgBase64);
+                    $answernodo->appendChild($file);
+                    $file->setAttribute('name', substr($image, 15));
+                    $file->setAttribute('path', '/');
+                    $file->setAttribute('encoding', "base64");
+                }
+
             }
 
         }
@@ -434,14 +437,16 @@ class ComunPreguntas
         $sons = array_reverse($sons);
         foreach($sons as $son){
             if (substr($son, 0, 15) == '@@PLUGINFILE@@/') {
-                $sn = file_get_contents($ruta.'/'.substr($son,15));
-                $sonBase64 = base64_encode($sn);
+                if (is_dir($ruta . '/' . substr($son, 15))) {
+                    $sn = file_get_contents($ruta . '/' . substr($son, 15));
+                    $sonBase64 = base64_encode($sn);
 
-                $file = $xml->createElement('file',$sonBase64);
-                $answernodo->appendChild($file);
-                $file->setAttribute('name',substr($son,15));
-                $file->setAttribute('path','/');
-                $file->setAttribute('encoding',"base64");
+                    $file = $xml->createElement('file', $sonBase64);
+                    $answernodo->appendChild($file);
+                    $file->setAttribute('name', substr($son, 15));
+                    $file->setAttribute('path', '/');
+                    $file->setAttribute('encoding', "base64");
+                }
             }
         }
         return ($xml);
