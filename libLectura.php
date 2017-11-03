@@ -351,8 +351,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     $drop->setText("");
                     $drop->setNo(($posRespuesta+1));
                     $drop->setChoice(($posRespuesta+1));
-                    $drop->setXleft($cordenadas[0]*$nuevoSize);
-                    $drop->setYtop($cordenadas[1]*$nuevoSize);
+                    $drop->setXleft($cordenadas[0]*($nuevoSize-0.1));
+                    $drop->setYtop($cordenadas[1]*($nuevoSize-0.1));
                     $drops[]=$drop;
                     unset($drop);
                 }
@@ -374,8 +374,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     if($itemRespImg->length!=0){
                         $imagenElemnt=buscarmatimage($itemResp);
                         $drag->setFile($imagenElemnt->url);
-                        $drag->setWidth($imagenElemnt->width*$nuevoSize);
-                        $drag->setHeight($imagenElemnt->height*$nuevoSize);
+                        $drag->setWidth($imagenElemnt->width*($nuevoSize-0.1));
+                        $drag->setHeight($imagenElemnt->height*($nuevoSize-0.1));
                     }
                     $itemRespText=$itemResp->getElementsByTagName('mattext');
                     if($itemRespText->length != 0){
@@ -408,6 +408,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
  */
 function leerPregMultiCloze($xml, $arrayRespuesta){
     //{1:MULTICHOICE:rojo~%100%blanco~negro}
+    $comprobacion=0;
     $texto='{1:MULTICHOICE:';
     $respuestas = $xml->getElementsByTagName('response_label');
     foreach ($respuestas as $key => $respuesta) {
@@ -418,7 +419,12 @@ function leerPregMultiCloze($xml, $arrayRespuesta){
         } else {
             //echo $id."-----VERDA----<br>";
             $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
+            $comprobacion=1;
         }
+    }
+    if($comprobacion==0){
+        echo "****** No hay respuesta correcta multicloze<br>";
+        $texto=$texto."%100%NULL~";
     }
     $texto=trim($texto, '~');
     $texto=$texto."}";
