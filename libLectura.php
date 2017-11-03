@@ -53,14 +53,14 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     //Calcular el porcentaje para cada respuesta válida;
     if($respuestas->length==count($arrayNoCorrectas)){
         $porcentaje=0;
-        echo "********** NO HAY RESPUESTAS CORRECTAS *******";
+        echo "****** NO HAY RESPUESTAS CORRECTAS<br>";
     }else{
         $porcentaje = (100 / ($respuestas->length - count($arrayNoCorrectas)));
     }
-    if($respuestas->length>1){
-        $preguntaSeleccion->setSingle(false);
-    }else{
+    if($respuestas->length - count($arrayNoCorrectas)==1){
         $preguntaSeleccion->setSingle(true);
+    }else{
+        $preguntaSeleccion->setSingle(false);
     }
     foreach ($respuestas as $key => $respuesta) {
 
@@ -74,6 +74,20 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
         $idRespuesta=$respuesta->getAttribute('ident');
         //Marcar las respuestas correctas
         $answer->setAttriFraction(marcarPregCorrectas($idRespuesta,$arrayNoCorrectas,$porcentaje));
+
+        $answers[] = $answer;
+        unset($answer);
+    }
+    if($respuestas->length==1){
+        echo "****** Solo una opcion en multichoice";
+        $answer = new Answer();
+        $answer->setAttriFormat("html");
+        //Seleccionar el texto de la respuesta
+        $answer->setText(" ");
+        $answer->setTextfeedback('');
+
+        //Marcar las respuestas correctas
+        $answer->setAttriFraction("0");
 
         $answers[] = $answer;
         unset($answer);
@@ -220,7 +234,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
         }
     }else{
         $preguntaOrden->setLayouttype('VERTICAL');
-        echo "******** NO HAY ORIENTACION ********<br>";
+        echo "****** NO HAY ORIENTACION <br>";
     }
     $preguntaOrden->setSelecttype('ALL');
     $preguntaOrden->setSelectcount('0');
@@ -306,7 +320,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         $preguntaDdimageortext->setHeightBackgroundImage($imagenFondo->height);
         $preguntaDdimageortext->setWidthBackgroundImage($imagenFondo->width);
     }else{
-        echo "******** ARRASTRAR - IMAGEN DE FONDO VACIA ********<br>";
+        echo "****** ARRASTRAR - IMAGEN DE FONDO VACIA <br>";
     }
 
 
@@ -336,7 +350,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     unset($drop);
                 }
             }else{
-                echo "*************** ERROR RESPUESTAS ARRASTRAR **********<br>";
+                echo "****** ERROR RESPUESTAS ARRASTRAR <br>";
                 $drop= new Drop();
                 $drops[]=$drop;
                 unset($drop);
@@ -364,7 +378,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     unset($drag);
                 }
             }else{
-                echo "*************** ERROR RESPUESTAS ARRASTRAR **********<br>";
+                echo "****** ERROR RESPUESTAS ARRASTRAR <br>";
                 $drag = new Drag();
                 $drags[] = $drag;
                 unset($drag);
@@ -405,16 +419,22 @@ function leerPregMultiCloze($xml, $arrayRespuesta){
 }
 
 function leerPregShortCloze($xml,$idRespuesta){
+    $comprobacion=0;
     $texto='{1:SHORTANSWER:';
     $listaRespCorrectas = $xml->getElementsByTagName('conditionvar');
     if($listaRespCorrectas->length==0){
-        echo "********* NO HAY RESPUESTA CORRECTA SHORTCLOZE ******* <br>";
+        echo "****** NO HAY RESPUESTA CORRECTA SHORTCLOZE <br>";
         $texto='';
     }else{
         foreach ($listaRespCorrectas->item(0)->getElementsByTagName('varequal') as $key => $respuesta) {
             if($idRespuesta==$respuesta->getAttribute('respident')){
                 $texto=$texto."=".$respuesta->nodeValue."~";
+                $comprobacion=1;
             }
+        }
+        if($comprobacion==0){
+            echo "****** no hay respuesta correcta de rellenar hueco<br>";
+            $texto=$texto."=".$idRespuesta."~";
         }
         $texto=trim($texto, '~');
         $texto=$texto."}";
@@ -446,21 +466,21 @@ function buscarIdFeedback($xml, $tipo){
     $listaRespCorrectas = $xml->getElementsByTagName('respcondition');
     if($listaRespCorrectas->length==0){
         $id=0;
-        echo "************* No hay feedback 1**********<br>";
+        echo "****** No hay feedback 1 <br>";
     }else{
         foreach ($listaRespCorrectas as $key => $zonaResp) {
             //Seleccionar los feedbacks
             $zonaFeedback = $zonaResp->getElementsByTagName('setvar');
             if($zonaFeedback->length==0){
                 $id=0;
-                echo "************* No hay feedback 2**********<br>";
+                echo "****** No hay feedback 2 <br>";
             }else{
                 foreach ($zonaFeedback as $key => $feedback) {
                     if ($feedback->nodeValue == $tipo) {
                         $respFeedback = $zonaResp->getElementsByTagName('displayfeedback');
                         if($respFeedback->length==0){
                             $id=0;
-                            echo "************* No hay feedback 3**********<br>";
+                            echo "****** No hay feedback 3 <br>";
                         }else{
                             //Seleccionar id de feedback correcto
                             $id = $respFeedback->item(0)->getAttribute('linkrefid');
