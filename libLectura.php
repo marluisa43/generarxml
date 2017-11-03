@@ -316,9 +316,16 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
     }
     $imagenFondo=buscarmatimage($pregunta);
     if(isset($imagenFondo->url)){
+        if($imagenFondo->height>400){
+            $nuevoSize=400/$imagenFondo->height;
+            echo "****** Imagen redimensionada <br>";
+        }else{
+            $nuevoSize=1;
+        }
         $preguntaDdimageortext->setBackgroundImage($imagenFondo->url);
-        $preguntaDdimageortext->setHeightBackgroundImage($imagenFondo->height);
-        $preguntaDdimageortext->setWidthBackgroundImage($imagenFondo->width);
+        $preguntaDdimageortext->setHeightBackgroundImage($imagenFondo->height*$nuevoSize);
+        $preguntaDdimageortext->setWidthBackgroundImage($imagenFondo->width*$nuevoSize);
+
     }else{
         echo "****** ARRASTRAR - IMAGEN DE FONDO VACIA <br>";
     }
@@ -344,8 +351,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     $drop->setText("");
                     $drop->setNo(($posRespuesta+1));
                     $drop->setChoice(($posRespuesta+1));
-                    $drop->setXleft($cordenadas[0]);
-                    $drop->setYtop(($cordenadas[1]));
+                    $drop->setXleft($cordenadas[0]*$nuevoSize);
+                    $drop->setYtop($cordenadas[1]*$nuevoSize);
                     $drops[]=$drop;
                     unset($drop);
                 }
@@ -367,8 +374,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     if($itemRespImg->length!=0){
                         $imagenElemnt=buscarmatimage($itemResp);
                         $drag->setFile($imagenElemnt->url);
-                        $drag->setWidth($imagenElemnt->width);
-                        $drag->setHeight($imagenElemnt->height);
+                        $drag->setWidth($imagenElemnt->width*$nuevoSize);
+                        $drag->setHeight($imagenElemnt->height*$nuevoSize);
                     }
                     $itemRespText=$itemResp->getElementsByTagName('mattext');
                     if($itemRespText->length != 0){
