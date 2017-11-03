@@ -29,8 +29,9 @@ class Category
             }
         }
 
+
         // Obtengo el nivel de la actividad
-        $sql = "SELECT CODI_DIC FROM NIVELL WHERE ID_NIVELL = (SELECT ID_NIVELL FROM BIBLIO_ACTIVITAT_NIVELL WHERE ID_ACTIVITAT=".$id_activitat.")";
+        $sql = "SELECT CODI_DIC FROM NIVELL WHERE ID_NIVELL = (SELECT ID_NIVELL FROM BIBLIO_ACTIVITAT_NIVELL WHERE ID_ACTIVITAT=".$id_activitat." and ROWNUM<2)";
 
         $query = $conn->executeSQL($sql);
         while ($row = oci_fetch_object($query, OCI_ASSOC+OCI_RETURN_NULLS)){
@@ -40,7 +41,7 @@ class Category
         }
 
         //Obtengo el Area de la actividad
-        $sql = "SELECT CODI_DIC FROM AREA WHERE ID_AREA=(SELECT ID_AREA FROM BIBLIO_ACTIVITAT_AREA WHERE ID_ACTIVITAT=".$id_activitat.")";
+        $sql = "SELECT CODI_DIC FROM AREA WHERE ID_AREA=(SELECT ID_AREA FROM BIBLIO_ACTIVITAT_AREA WHERE ID_ACTIVITAT=".$id_activitat." and ROWNUM<2)";
         $query = $conn->executeSQL($sql);
         while ($row = oci_fetch_object($query, OCI_ASSOC+OCI_RETURN_NULLS)){
             foreach ($row as $item){

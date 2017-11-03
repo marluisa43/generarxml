@@ -74,15 +74,15 @@ class Ddimageortext extends ComunPreguntas
      */
     public function getWidthBackgroundImage()
     {
-        return $this->width;
+        return $this->widthBackgroundImage;
     }
 
     /**
      * @param mixed $width
      */
-    public function setWidthBackgroundImage($width)
+    public function setWidthBackgroundImage($widthBackgroundImage)
     {
-        $this->width = $width;
+        $this->widthBackgroundImage = $widthBackgroundImage;
     }
 
     /**
@@ -90,15 +90,15 @@ class Ddimageortext extends ComunPreguntas
      */
     public function getHeightBackgroundImage()
     {
-        return $this->height;
+        return $this->heightBackgroundImage;
     }
 
     /**
      * @param mixed $height
      */
-    public function setHeightBackgroundImage($height)
+    public function setHeightBackgroundImage($heightBackgroundImage)
     {
-        $this->height = $height;
+        $this->heightBackgroundImage = $heightBackgroundImage;
     }
 
 
@@ -123,7 +123,7 @@ class Ddimageortext extends ComunPreguntas
     }
 
     private function loadBackgroundImage ($xml,$question,$image,$ruta){
-        if (is_dir($ruta.'/'.$image) and $image!=""){
+        if (is_file($ruta.'/'.$image) and $image!=""){
             $this->redimensionarImage($ruta,$image,$this->getWidthBackgroundImage(),$this->getHeightBackgroundImage());
 
             $bgimg=file_get_contents($ruta.'/'.$image);
@@ -156,7 +156,7 @@ class Ddimageortext extends ComunPreguntas
             $dragnodo->appendChild($draggroupet);
 
             if (!is_null($drag->getFile())){
-                if (is_dir($ruta.'/'.$drag->getFile())){
+                if (is_file($ruta.'/'.$drag->getFile())){
                     $this->redimensionarImage($ruta,$drag->getFile(),$drag->getWidth(),$drag->getHeight());
                     $fileImage=file_get_contents($ruta.'/'.$drag->getFile());
                     $fileImageBase64=base64_encode($fileImage);

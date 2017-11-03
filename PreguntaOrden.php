@@ -176,6 +176,7 @@ class PreguntaOrden extends ComunPreguntas
             $answernodo->appendChild($text);
 
             $xml = $this->insertImage($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
+            $xml = $this->insertHTML($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
             $xml = $this->insertSon($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
         }
 
