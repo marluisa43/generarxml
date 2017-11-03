@@ -432,6 +432,7 @@ function buscarTituloPreg($xml,$numero){
     }else{
         $titulo="Pregunta ".$numero;
     }
+    echo $titulo.'<br>';
     return $titulo;
 }
 

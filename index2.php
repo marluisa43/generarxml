@@ -8,7 +8,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'xml/';
+$directorio = 'cuadernos/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -50,9 +50,12 @@ foreach ($ficheros as $fichero){
         //INICIO XML
         $inicioXml = new BeginXml();
         //$inicioXml->setCategory($fichero);
-        //$categoria = new Category();
-        //$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
-        $inicioXml->setRuta($directorio . $fichero);
+        $categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+        $inicioXml->setRuta($directorio.$fichero);
+
+
+
 
         $xml=$inicioXml->getInicioXML();
 

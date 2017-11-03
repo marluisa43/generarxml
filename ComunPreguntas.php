@@ -91,6 +91,7 @@ class ComunPreguntas
      */
     public function setQuestiontext($questiontext)
     {
+        $questiontext=str_replace('./','@@PLUGINFILE@@/',$questiontext);
         $this->questiontext = htmlspecialchars($questiontext);
     }
 
@@ -276,6 +277,7 @@ class ComunPreguntas
         $text=$xml->createElement('text',$this->getQuestiontext());
         $enum->appendChild($text);
         $xml = $this->insertImage($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
+        $xml = $this->insertHTML($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
         $xml = $this->insertSon($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
 
         if(!is_null($this->getGeneralfeedback())){
@@ -286,6 +288,7 @@ class ComunPreguntas
             $text=$xml->createElement('text',$this->getGeneralfeedback());
             $generalfeedback->appendChild($text);
             $xml = $this->insertImage($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
+            $xml = $this->insertHTML($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
             $xml = $this->insertSon($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
 
         }
@@ -396,13 +399,59 @@ class ComunPreguntas
 
         foreach($images as $image) {
             if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
-                if (is_dir($ruta . '/' . substr($image, 15))){
+                if (is_file($ruta . '/' . substr($image, 15))){
                     $im = file_get_contents($ruta . '/' . substr($image, 15));
                     $imgBase64 = base64_encode($im);
 
                     $file = $xml->createElement('file', $imgBase64);
                     $answernodo->appendChild($file);
                     $file->setAttribute('name', substr($image, 15));
+                    $file->setAttribute('path', '/');
+                    $file->setAttribute('encoding', "base64");
+                }
+
+            }
+
+        }
+        return ($xml);
+    }
+
+
+    /*
+     * Inserta las páginas html que están en la ristra
+     * para la pregunta $answernodo
+     *
+     */
+    public function insertHTML($xml,$answernodo,$ristra,$ruta){
+        $text = $ristra;
+        $htmls = array();
+        $text = htmlspecialchars_decode($text);
+        // Nuestra expresión regular, que busca los src dentro
+        // de las etiquetas <img/>
+        // y que no tenga en cuenta mayusculas o minusculas
+        $re_extractImages='/< *a[^>]*href *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<a ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $htmls=$matches[1];
+            $posicion= strpos($text,'<a href=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<a href=');
+        }
+
+        $htmls = array_reverse($htmls);
+
+        foreach($htmls as $html) {
+            if (substr($html, 0, 15) == '@@PLUGINFILE@@/') {
+                if (is_file($ruta . '/' . substr($html, 15))){
+                    $ht = file_get_contents($ruta . '/' . substr($html, 15));
+                    $htmlBase64 = base64_encode($ht);
+
+                    $file = $xml->createElement('file', $htmlBase64);
+                    $answernodo->appendChild($file);
+                    $file->setAttribute('name', substr($html, 15));
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
                 }
@@ -437,7 +486,7 @@ class ComunPreguntas
         $sons = array_reverse($sons);
         foreach($sons as $son){
             if (substr($son, 0, 15) == '@@PLUGINFILE@@/') {
-                if (is_dir($ruta . '/' . substr($son, 15))) {
+                if (is_file($ruta . '/' . substr($son, 15))) {
                     $sn = file_get_contents($ruta . '/' . substr($son, 15));
                     $sonBase64 = base64_encode($sn);
 

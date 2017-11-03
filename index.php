@@ -16,9 +16,9 @@ $inicioXml = new BeginXml();
 $inicioXml->setCategory("prueba");
 
 // Obtenemos la categoria
-/*$categoria = new Category();
+$categoria = new Category();
 $folder = "mud_up_down_pr_en";
-$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
+$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
 
 
 // Fin
