@@ -135,7 +135,15 @@ function pregDescripcion($pregunta, $root, $xml,$numero){
     //Titulo de la descipcion
     $preguntaDescription->setName(buscarTituloPreg($pregunta,$numero));
     //Texto de la descripcion
-    $preguntaDescription->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+    $texto=buscarmattext($pregunta);
+    if($texto==''){
+        $segundoNivel = $pregunta->getElementsByTagName('flow');
+        if($segundoNivel->item(1)){
+            echo "****** EJECUTAR DOBLE FLOW<br>";
+            $texto=buscarmattext($segundoNivel->item(1));
+        }
+    }
+    $preguntaDescription->setQuestiontext(agregarCdata($texto));
     $preguntaDescription->setGeneralfeedback('');
 
     $xmlPreg=$preguntaDescription->createDescription($xml);
@@ -328,6 +336,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
 
     }else{
         echo "****** ARRASTRAR - IMAGEN DE FONDO VACIA <br>";
+        $nuevoSize=0;
     }
 
 
@@ -374,8 +383,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     if($itemRespImg->length!=0){
                         $imagenElemnt=buscarmatimage($itemResp);
                         $drag->setFile($imagenElemnt->url);
-                        $drag->setWidth($imagenElemnt->width*($nuevoSize-0.1));
-                        $drag->setHeight($imagenElemnt->height*($nuevoSize-0.1));
+                        $drag->setWidth($imagenElemnt->width);
+                        $drag->setHeight($imagenElemnt->height);
                     }
                     $itemRespText=$itemResp->getElementsByTagName('mattext');
                     if($itemRespText->length != 0){
@@ -623,7 +632,8 @@ function tipoTexto($nodo){
         if($porciones[0]=="image"){
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
-            //echo "Flash<br>";
+            $texto="Eliminado archivo flash";
+            echo "****** Eliminado archivo flash<br>";
         }else{
             //echo "NO SE***************************************************";
         }
@@ -633,6 +643,8 @@ function tipoTexto($nodo){
     }
     if($nodo->localName=="matjclic") {
         //echo "Jclic<br>";
+        $texto="Eliminado archivo Jclick";
+        echo "****** Eliminado archivo Jclick<br>";
     }
     if($nodo->localName=="matapplication") {
         //echo "Documento<br>";
