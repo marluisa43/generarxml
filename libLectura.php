@@ -45,7 +45,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     //Buscar las respuestas que no son correctas
     $arrayNoCorrectas=buscarRespInc($pregunta);
     //Titulo de la pregunta
-    $preguntaSeleccion->setName(buscarTituloPreg($pregunta,$numero));
+    $preguntaSeleccion->setName(buscarTituloPreg($pregunta,$numero,""));
 
     //Seleccionar la zona de espuestas
     $respuestas = $pregunta->getElementsByTagName('response_label');
@@ -130,10 +130,11 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
  * @param $xml
  * @return mixed
  */
-function pregDescripcion($pregunta, $root, $xml,$numero){
+function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     $preguntaDescription=new PreguntaDescription($root);
     //Titulo de la descipcion
-    $preguntaDescription->setName(buscarTituloPreg($pregunta,$numero));
+    $numero=
+    $preguntaDescription->setName(buscarTituloPreg($pregunta,$numero,$tipo));
     //Texto de la descripcion
     $texto=buscarmattext($pregunta);
     if($texto==''){
@@ -166,7 +167,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
     $arrayNoCorrectas=buscarRespInc($pregunta);
 
     // Titulo de la pregunta.
-    $preguntaCloze->setName(buscarTituloPreg($pregunta,$numero));
+    $preguntaCloze->setName(buscarTituloPreg($pregunta,$numero,""));
 
     //Puntuacion acierto
     $preguntaCloze->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
@@ -218,7 +219,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
     $preguntaOrden = new PreguntaOrden($root);
 
     //Titulo de pregunta
-    $preguntaOrden->setName(buscarTituloPreg($pregunta,$numero));
+    $preguntaOrden->setName(buscarTituloPreg($pregunta,$numero,""));
     //Enunciado de la pregunta
     $preguntaOrden->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
     $preguntaOrden->setGeneralfeedback("");
@@ -295,7 +296,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
 function pregArrastrar($pregunta, $root, $xml,$numero){
     $preguntaDdimageortext = new Ddimageortext($root);
 
-    $preguntaDdimageortext->setName(buscarTituloPreg($pregunta,$numero));
+    $preguntaDdimageortext->setName(buscarTituloPreg($pregunta,$numero,""));
     $preguntaDdimageortext->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
     $preguntaDdimageortext->setGeneralfeedback("");
     $preguntaDdimageortext->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
@@ -471,15 +472,33 @@ function leerPregShortCloze($xml,$idRespuesta){
     return $texto;
 }
 
-function buscarTituloPreg($xml,$numero){
+function buscarTituloPreg($xml,$numero,$tipo){
     if($xml->hasAttribute('title')){
         if($xml->getAttribute('title')==''){
-            $titulo=$numero.". Pregunta";
+            if($tipo!=''){
+                $titulo=$numero.". ".$tipo;
+            }else{
+                $titulo=$numero.". Pregunta";
+            }
         }else{
-            $titulo=$numero. ". " .$xml->getAttribute('title');
+            if($tipo!=''){
+                if($tipo=="Sección"){
+                    $titulo=$numero.". ".$tipo. " " .$xml->getAttribute('title');
+                }else{
+                    $titulo=$numero.". ".$xml->getAttribute('title');
+                }
+
+            }else{
+                $titulo=$numero. ". " .$xml->getAttribute('title');
+            }
+
         }
     }else{
-        $titulo=$numero.". Pregunta";
+        if($tipo!=''){
+            $titulo=$numero.". ".$tipo;
+        }else{
+            $titulo=$numero.". Pregunta";
+        }
     }
     echo $titulo.'<br>';
     return $titulo;
