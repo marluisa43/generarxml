@@ -336,25 +336,6 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
             $nuevoSizex = 600 / $imagenFondo->width;
         }
 
-
-           /* if($imagenFondo->width>600) {
-                $nuevoSizey = 400 / $imagenFondo->height;
-                $nuevoSizex = 600 / $imagenFondo->widht;
-            }else{
-                $nuevoSizey = 400 / $imagenFondo->height;
-                $nuevoSizex = 1;
-            }
-            echo "****** Imagen redimensionada <br>";
-        }else{
-            if($imagenFondo->width>600) {
-                $nuevoSizey = 1;
-                $nuevoSizex = 600 / $imagenFondo->widht;
-            }else{
-                $nuevoSizey=1;
-                $nuevoSizex=1;
-            }
-
-        }*/
         $nuevoSize=$nuevoSizex*$nuevoSizey;
         $preguntaDdimageortext->setBackgroundImage($imagenFondo->url);
         $preguntaDdimageortext->setHeightBackgroundImage($imagenFondo->height*$nuevoSize);
@@ -379,8 +360,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         //echo "--------------".buscarmattext($itemResp)."---------<br>";
         if($itemResp->hasAttribute("rarea")){
             if(isset($arrayCorrectas)){
-                if(in_array($itemResp->getAttribute("ident"),$arrayCorrectas)){
-                    $posRespuesta=array_search($itemResp->getAttribute("ident"),$arrayCorrectas);
+                if(in_array(trim($itemResp->getAttribute("ident")),$arrayCorrectas)){
+                    $posRespuesta=array_search(trim($itemResp->getAttribute("ident")),$arrayCorrectas);
                     $cordenadas=explode(",",$itemResp->nodeValue);
                     $drop= new Drop();
                     $drop->setText("");
@@ -400,8 +381,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
 
         }elseif ($itemResp->firstChild->nextSibling->nodeName=="material"){
             if(isset($arrayElementos)){
-                if(in_array($itemResp->getAttribute("ident"),$arrayElementos)) {
-                    $posRespuesta = array_search($itemResp->getAttribute("ident"), $arrayElementos);
+                if(in_array(trim($itemResp->getAttribute("ident")),$arrayElementos)) {
+                    $posRespuesta = array_search(trim($itemResp->getAttribute("ident")), $arrayElementos);
                     $drag = new Drag();
                     $drag->setNo(($posRespuesta + 1));
                     $drag->setDraggroup(1);
@@ -658,7 +639,7 @@ function tipoTexto($nodo){
         if($porciones[0]=="image"){
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
-            $texto="Eliminado archivo flash";
+            $texto="Eliminado archivo flash |";
             echo "****** Eliminado archivo flash<br>";
         }else{
             //echo "NO SE***************************************************";
@@ -669,7 +650,7 @@ function tipoTexto($nodo){
     }
     if($nodo->localName=="matjclic") {
         //echo "Jclic<br>";
-        $texto="Eliminado archivo Jclick";
+        $texto="Eliminado archivo Jclick |";
         echo "****** Eliminado archivo Jclick<br>";
     }
     if($nodo->localName=="matapplication") {
