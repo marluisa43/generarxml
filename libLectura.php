@@ -323,13 +323,39 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         }
     }
     $imagenFondo=buscarmatimage($pregunta);
-    if(isset($imagenFondo->url)){
-        if($imagenFondo->height>400){
-            $nuevoSize=400/$imagenFondo->height;
+    $nuevoSizey=1;
+    $nuevoSizex=1;
+    if(isset($imagenFondo->url)) {
+        if ($imagenFondo->height > 400) {
+            $nuevoSizey = 400 / $imagenFondo->height;
+            $nuevoAnchoImageFondo = $imagenFondo->width * $nuevoSizey;
+            if ($nuevoAnchoImageFondo > 600) {
+                $nuevoSizex = 600 / $nuevoAnchoImageFondo;
+            }
+        } else if ($imagenFondo->width > 600) {
+            $nuevoSizex = 600 / $imagenFondo->width;
+        }
+
+
+           /* if($imagenFondo->width>600) {
+                $nuevoSizey = 400 / $imagenFondo->height;
+                $nuevoSizex = 600 / $imagenFondo->widht;
+            }else{
+                $nuevoSizey = 400 / $imagenFondo->height;
+                $nuevoSizex = 1;
+            }
             echo "****** Imagen redimensionada <br>";
         }else{
-            $nuevoSize=1;
-        }
+            if($imagenFondo->width>600) {
+                $nuevoSizey = 1;
+                $nuevoSizex = 600 / $imagenFondo->widht;
+            }else{
+                $nuevoSizey=1;
+                $nuevoSizex=1;
+            }
+
+        }*/
+        $nuevoSize=$nuevoSizex*$nuevoSizey;
         $preguntaDdimageortext->setBackgroundImage($imagenFondo->url);
         $preguntaDdimageortext->setHeightBackgroundImage($imagenFondo->height*$nuevoSize);
         $preguntaDdimageortext->setWidthBackgroundImage($imagenFondo->width*$nuevoSize);
@@ -360,8 +386,8 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     $drop->setText("");
                     $drop->setNo(($posRespuesta+1));
                     $drop->setChoice(($posRespuesta+1));
-                    $drop->setXleft($cordenadas[0]*($nuevoSize-0.1));
-                    $drop->setYtop($cordenadas[1]*($nuevoSize-0.1));
+                    $drop->setXleft($cordenadas[0]*($nuevoSize));
+                    $drop->setYtop($cordenadas[1]*($nuevoSize));
                     $drops[]=$drop;
                     unset($drop);
                 }
