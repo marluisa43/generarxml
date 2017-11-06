@@ -458,12 +458,12 @@ function leerPregShortCloze($xml,$idRespuesta){
 function buscarTituloPreg($xml,$numero){
     if($xml->hasAttribute('title')){
         if($xml->getAttribute('title')==''){
-            $titulo="Pregunta ".$numero;
+            $titulo=$numero.". Pregunta";
         }else{
-            $titulo=$xml->getAttribute('title');
+            $titulo=$numero. ". " .$xml->getAttribute('title');
         }
     }else{
-        $titulo="Pregunta ".$numero;
+        $titulo=$numero.". Pregunta";
     }
     echo $titulo.'<br>';
     return $titulo;
