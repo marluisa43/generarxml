@@ -178,6 +178,7 @@ class PreguntaOrden extends ComunPreguntas
             $xml = $this->insertImage($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
             $xml = $this->insertHTML($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
             $xml = $this->insertSon($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
+            $xml = $this->insertFlash($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
         }
 
         return $xml;

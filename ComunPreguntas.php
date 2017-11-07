@@ -279,6 +279,7 @@ class ComunPreguntas
         $xml = $this->insertImage($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
         $xml = $this->insertHTML($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
         $xml = $this->insertSon($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
+        $xml = $this->insertFlash($xml,$enum,$this->getQuestiontext(),BeginXml::getRuta());
 
         if(!is_null($this->getGeneralfeedback())){
             // Rellenamos la retroalimentación general de la pregunta.
@@ -290,7 +291,7 @@ class ComunPreguntas
             $xml = $this->insertImage($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
             $xml = $this->insertHTML($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
             $xml = $this->insertSon($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
-
+            $xml = $this->insertFlash($xml,$generalfeedback,$this->getGeneralfeedback(),BeginXml::getRuta());
         }
 
         if(is_numeric($this->getDefaultgrade())){
@@ -500,5 +501,53 @@ class ComunPreguntas
         }
         return ($xml);
     }
+
+
+    /*
+    * Inserta los Flash que están en la ristra
+    * para la pregunta $answernodo
+    *
+    */
+    public function insertFlash($xml,$answernodo,$ristra,$ruta){
+        $text = $ristra;
+        $flashs = array();
+        $text = htmlspecialchars_decode($text);
+        // Nuestra expresión regular, que busca los embed dentro
+        // de las etiquetas <embed/>
+        // y que no tenga en cuenta mayusculas o minusculas
+        $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<embed ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $flashs=$matches[1];
+            $posicion= strpos($text,'<embed src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<embed src=');
+        }
+
+        $flashs = array_reverse($flashs);
+
+        foreach($flashs as $flash) {
+            if (substr($flash, 0, 15) == '@@PLUGINFILE@@/') {
+                if (is_file($ruta . '/' . substr($flash, 15))){
+                    $fs = file_get_contents($ruta . '/' . substr($flash, 15));
+                    $imgBase64 = base64_encode($fs);
+
+                    $file = $xml->createElement('file', $imgBase64);
+                    $answernodo->appendChild($file);
+                    $file->setAttribute('name', substr($flash, 15));
+                    $file->setAttribute('path', '/');
+                    $file->setAttribute('encoding', "base64");
+                }
+
+            }
+
+        }
+        return ($xml);
+    }
+
+
 
 }

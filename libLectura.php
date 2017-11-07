@@ -482,7 +482,7 @@ function buscarTituloPreg($xml,$numero,$tipo){
             }
         }else{
             if($tipo!=''){
-                if($tipo=="Sección"){
+                if($tipo=="Secció"){
                     $titulo=$numero.". ".$tipo. " " .$xml->getAttribute('title');
                 }else{
                     $titulo=$numero.". ".$xml->getAttribute('title');

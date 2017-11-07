@@ -119,6 +119,7 @@ class PreguntaSeleccion extends ComunPreguntas
             $xml = $this->insertImage($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
             $xml = $this->insertHTML($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
             $xml = $this->insertSon($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
+            $xml = $this->insertFlash($xml,$answernodo,$answer->getText(),BeginXml::getRuta());
 
             $feedback = $xml->createElement('feedback');
             $feedback = $answernodo->appendChild($feedback);
