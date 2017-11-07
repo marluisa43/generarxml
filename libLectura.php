@@ -708,9 +708,14 @@ function transformarFlash($nodo){
 }
 
 function transformarJclic($nodo){
-    $texto='<a href="'.$nodo->getAttribute("uri").'"';
-    $texto=$texto.'  width="'.$nodo->getAttribute("width").'"';
-    $texto=$texto.'  height="'.$nodo->getAttribute("height").'"';
+    $nombre=basename($nodo->getAttribute("uri"),".jclic.zip");
+    $texto='<object type="text/html" data="https://clic.xtec.cat/projects/'.$nombre.'/jclic.js/index.html" width="'.$nodo->getAttribute("width").'" height="'.$nodo->getAttribute("height").'"></object><br>';
+
+    if(substr_compare($nodo->getAttribute("uri"),"http",0,4)){
+        $texto=$texto.'<a href="@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'"';
+    }else{
+        $texto=$texto.'<a href="'.$nodo->getAttribute("uri").'"';
+    }
     $texto=$texto.'>'.basename($nodo->getAttribute("uri")).'</a>';
     if($nodo->getAttribute("uri")==""){
         $texto='';
