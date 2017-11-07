@@ -658,7 +658,7 @@ function tipoTexto($nodo){
         if($porciones[0]=="image"){
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
-            $texto="Eliminado archivo flash |";
+            $texto="<b>Eliminat fitxer flash</b> |";
             echo "****** Eliminado archivo flash<br>";
         }else{
             //echo "NO SE***************************************************";
@@ -669,8 +669,8 @@ function tipoTexto($nodo){
     }
     if($nodo->localName=="matjclic") {
         //echo "Jclic<br>";
-        $texto="Eliminado archivo Jclick |";
-        echo "****** Eliminado archivo Jclick<br>";
+        $texto="<b>Eliminat fitxer Jclic</b> |";
+        echo "****** Eliminado archivo Jclic<br>";
     }
     if($nodo->localName=="matapplication") {
         //echo "Documento<br>";
