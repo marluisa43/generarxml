@@ -440,7 +440,11 @@ function leerPregMultiCloze($xml, $arrayRespuesta){
         }
     }
     if($comprobacion==0){
-        echo "****** No hay respuesta correcta multicloze<br>";
+        if($respuestas->length==0){
+            $texto=$texto."NULL~";
+            echo "****** No hay elementos en multichoice<br>";
+        }
+        echo "****** No hay respuesta correcta multichoice<br>";
         $texto=$texto."%100%NULL~";
     }
     $texto=trim($texto, '~');
