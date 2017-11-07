@@ -8,7 +8,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'cuadernos/';
+$directorio = 'xml/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -49,9 +49,9 @@ foreach ($ficheros as $fichero){
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        //$inicioXml->setCategory($fichero);
-        $categoria = new Category();
-        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+        $inicioXml->setCategory($fichero);
+        /*$categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
         $inicioXml->setRuta($directorio.$fichero);
 
 
@@ -70,7 +70,7 @@ foreach ($ficheros as $fichero){
                     $descripcion++;
                     $numPregunta++;
                     echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo descripcion<br>";
-                    $xml=pregDescripcion($sectionPresentation->item(0),$inicioXml->getRoot(),$xml,$numPregunta);
+                    $xml=pregDescripcion($sectionPresentation->item(0),$inicioXml->getRoot(),$xml,$numPregunta,"Sección");
                 }
             }
 
@@ -134,7 +134,7 @@ foreach ($ficheros as $fichero){
                             }else{
                                 //DESCRIPCION DE PREGUNTA
                                 $descripcion++;
-                                $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripción");
                                 echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
                             }
 
@@ -162,7 +162,7 @@ foreach ($ficheros as $fichero){
                                 } else {
                                     //DESCRIPCION PREGUNTA
                                     echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
-                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripción");
                                     $descripcion++;
                                 }
                             }

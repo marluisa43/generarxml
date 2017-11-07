@@ -658,8 +658,8 @@ function tipoTexto($nodo){
         if($porciones[0]=="image"){
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
-            $texto="<b>Eliminat fitxer flash</b> |";
-            echo "****** Eliminado archivo flash<br>";
+            $texto=transformarFlash($nodo);
+            echo "++++Archivo flash";
         }else{
             //echo "NO SE***************************************************";
         }
@@ -669,11 +669,12 @@ function tipoTexto($nodo){
     }
     if($nodo->localName=="matjclic") {
         //echo "Jclic<br>";
-        $texto="<b>Eliminat fitxer Jclic</b> |";
-        echo "****** Eliminado archivo Jclic<br>";
+        $texto=transformarJclic($nodo);
+        echo "++++++ archivo Jclic<br>";
     }
     if($nodo->localName=="matapplication") {
         //echo "Documento<br>";
+        echo "++++Documento";
     }
     if($nodo->localName=="matvideo") {
         $texto=transformarVideo($nodo);
@@ -688,6 +689,29 @@ function transformarImagen($nodo){
     $texto=$texto.' width="'.$nodo->getAttribute("width").'"';
     $texto=$texto.' height="'.$nodo->getAttribute("height").'"';
     $texto=$texto.' role="presentation" class="img-responsive atto_image_button_text-bottom">';
+    if($nodo->getAttribute("uri")==""){
+        $texto='';
+    }
+    return $texto;
+}
+
+function transformarFlash($nodo){
+    $texto='<object width="'.$nodo->getAttribute("width").'" height="'.$nodo->getAttribute("height").'" >';
+    $texto=$texto.'<param name="movie" value="';
+    $texto=$texto.'@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'">';
+    $texto=$texto.'<param name="play" value="true" >';
+    $texto=$texto.'<embed src="@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'"></embed></object>';
+    if($nodo->getAttribute("uri")==""){
+        $texto='';
+    }
+    return $texto;
+}
+
+function transformarJclic($nodo){
+    $texto='<a href="'.$nodo->getAttribute("uri").'"';
+    $texto=$texto.'  width="'.$nodo->getAttribute("width").'"';
+    $texto=$texto.'  height="'.$nodo->getAttribute("height").'"';
+    $texto=$texto.'>'.basename($nodo->getAttribute("uri")).'</a>';
     if($nodo->getAttribute("uri")==""){
         $texto='';
     }
