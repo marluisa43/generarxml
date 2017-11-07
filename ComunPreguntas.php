@@ -92,7 +92,100 @@ class ComunPreguntas
     public function setQuestiontext($questiontext)
     {
         $questiontext=str_replace('./','@@PLUGINFILE@@/',$questiontext);
+        $questiontext = $this->addSRC($questiontext);
+        $questiontext = $this->addHref($questiontext);
+        $questiontext = $this->addSon($questiontext);
+        $questiontext = $this->addFlash($questiontext);
+
         $this->questiontext = htmlspecialchars($questiontext);
+    }
+
+    function addSRC($text) {
+
+        $re_extractImages='/< *img[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<img ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $images=$matches[1];
+            $posicion= strpos($text,'<img src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<img src=');
+        }
+
+        foreach ($images as $image){
+            if (!strpos($image,'/')){
+                $text=str_replace($image,'@@PLUGINFILE@@/'.$image,$text);
+            }
+        }
+        return $text;
+    }
+
+    function addHref($text) {
+
+        $re_extractImages='/< *a[^>]*href *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<a ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $htmls=$matches[1];
+            $posicion= strpos($text,'<a href=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<a href=');
+        }
+
+        foreach ($htmls as $html){
+            if (!strpos($html,'/')){
+                $text=str_replace($html,'@@PLUGINFILE@@/'.$html,$text);
+            }
+        }
+        return $text;
+    }
+
+    function addSon($text) {
+
+        $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<source ');
+
+        while ($valor) {
+            preg_match_all( $re_extractSons  , $text , $matches);
+            $sons=$matches[1];
+            $posicion= strpos($text,'<source src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<source src=');
+        }
+
+        foreach ($sons as $son){
+            if (!strpos($son,'/')){
+                $text=str_replace($son,'@@PLUGINFILE@@/'.$son,$text);
+            }
+        }
+        return $text;
+    }
+
+    function addFlash($text) {
+
+        $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
+
+        $valor=strpos($text,'<embed ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $flashs=$matches[1];
+            $posicion= strpos($text,'<embed src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<embed src=');
+        }
+
+        foreach ($flashs as $flash){
+            if (!strpos($flash,'/')){
+                $text=str_replace($flash,'@@PLUGINFILE@@/'.$flash,$text);
+            }
+        }
+        return $text;
     }
 
     /**
