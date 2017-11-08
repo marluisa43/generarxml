@@ -1,6 +1,7 @@
 <?php
 
 
+
 class Answer
 {
     private $attriFraction;
@@ -53,6 +54,17 @@ class Answer
      */
     public function setText($text)
     {
+        $text=str_replace('./','@@PLUGINFILE@@/',$text);
+
+        echo("Antes: ".$text. "-");
+
+        $text=ComunPreguntas::addSRC($text);
+        $text=ComunPreguntas::addHref($text);
+        $text=ComunPreguntas::addSon($text);
+        $text=ComunPreguntas::addFlash($text);
+
+        echo ("Despues: ".$text."<br>");
+
         $this->text = htmlspecialchars($text);
     }
 

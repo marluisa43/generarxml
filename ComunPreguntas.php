@@ -92,16 +92,19 @@ class ComunPreguntas
     public function setQuestiontext($questiontext)
     {
         $questiontext=str_replace('./','@@PLUGINFILE@@/',$questiontext);
-        $questiontext = $this->addSRC($questiontext);
-        $questiontext = $this->addHref($questiontext);
-        $questiontext = $this->addSon($questiontext);
-        $questiontext = $this->addFlash($questiontext);
+
+        $questiontext=$this->addSRC($questiontext);
+        $questiontext=$this->addHref($questiontext);
+        $questiontext=$this->addSon($questiontext);
+        $questiontext=$this->addFlash($questiontext);
 
         $this->questiontext = htmlspecialchars($questiontext);
+
     }
 
-    function addSRC($text) {
+    public function addSRC($text) {
 
+        $images = array();
         $re_extractImages='/< *img[^>]*src *= *["\']?([^"\']*)/ims';
 
         $valor=strpos($text,'<img ');
@@ -114,16 +117,30 @@ class ComunPreguntas
             $valor=strpos($text,'<img src=');
         }
 
+
         foreach ($images as $image){
             if (!strpos($image,'/')){
-                $text=str_replace($image,'@@PLUGINFILE@@/'.$image,$text);
+                if (substr_compare($text,'@@PLUGINFILE@@/',0,9)){
+                    echo ("-------------ENTRA-------------<br>");
+                    $valorSustituir=$image;
+                    $sustituto='@@PLUGINFILE@@/'.$image;
+                    echo($valorSustituir."-".$sustituto."<br>");
+                    $text=str_replace($valorSustituir,$sustituto,$text);
+                }
+
             }
         }
+        if(substr_compare($text,'<![CDATA[',0,9)){
+            if (!substr_compare($text,']]>',-3,3)){
+                $text="<![CDATA[".$text;
+            }
+        }
+
         return $text;
     }
 
-    function addHref($text) {
-
+    public function addHref($text) {
+        $htmls = array();
         $re_extractImages='/< *a[^>]*href *= *["\']?([^"\']*)/ims';
 
         $valor=strpos($text,'<a ');
@@ -141,11 +158,17 @@ class ComunPreguntas
                 $text=str_replace($html,'@@PLUGINFILE@@/'.$html,$text);
             }
         }
+        if(substr_compare($text,'<![CDATA[',0,9)){
+            if (!substr_compare($text,']]>',-3,3)){
+                $text="<![CDATA[".$text;
+            }
+        }
+
         return $text;
     }
 
-    function addSon($text) {
-
+    public function addSon($text) {
+        $sons = array();
         $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
 
         $valor=strpos($text,'<source ');
@@ -163,11 +186,17 @@ class ComunPreguntas
                 $text=str_replace($son,'@@PLUGINFILE@@/'.$son,$text);
             }
         }
+
+        if(substr_compare($text,'<![CDATA[',0,9)){
+            if (!substr_compare($text,']]>',-3,3)){
+                $text="<![CDATA[".$text;
+            }
+        }
         return $text;
     }
 
-    function addFlash($text) {
-
+    public function addFlash($text) {
+        $flashs = array();
         $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
 
         $valor=strpos($text,'<embed ');
@@ -183,6 +212,11 @@ class ComunPreguntas
         foreach ($flashs as $flash){
             if (!strpos($flash,'/')){
                 $text=str_replace($flash,'@@PLUGINFILE@@/'.$flash,$text);
+            }
+        }
+        if(substr_compare($text,'<![CDATA[',0,9)){
+            if (!substr_compare($text,']]>',-3,3)){
+                $text="<![CDATA[".$text;
             }
         }
         return $text;
