@@ -120,9 +120,7 @@ class ComunPreguntas
 
         $introducidas=array();
         foreach ($images as $image){
-
             if (!strpos($image,'/')){
-
                 $valorSustituir=$image;
                 $sustituto='@@PLUGINFILE@@/'.$image;
                 if(!in_array($sustituto,$introducidas)){
@@ -141,6 +139,7 @@ class ComunPreguntas
     }
 
     public function addHref($text) {
+        $text=htmlspecialchars($text);
         $htmls = array();
         $re_extractImages='/< *a[^>]*href *= *["\']?([^"\']*)/ims';
 
@@ -154,14 +153,17 @@ class ComunPreguntas
             $valor=strpos($text,'<a href=');
         }
 
+
         $introducidas=array();
         foreach ($htmls as $html){
             if (!strpos($html,'/')){
                 $valorSustituir=$html;
                 $sustituto='@@PLUGINFILE@@/'.$html;
-                if(!in_array($sustituto,$introducidas)){
-                    $text=str_replace($valorSustituir,$sustituto,$text);
-                    $introducidas[]=$sustituto;
+                if (!strpos($html,'?')){
+                    if(!in_array($sustituto,$introducidas)){
+                        $text=str_replace($valorSustituir,$sustituto,$text);
+                        $introducidas[]=$sustituto;
+                    }
                 }
             }
         }
@@ -171,10 +173,11 @@ class ComunPreguntas
             }
         }
 
-        return $text;
+        return htmlspecialchars_decode($text);
     }
 
     public function addSon($text) {
+
         $sons = array();
         $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
 
@@ -209,6 +212,7 @@ class ComunPreguntas
     }
 
     public function addFlash($text) {
+
         $flashs = array();
         $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
 
