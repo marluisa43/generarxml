@@ -8,7 +8,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'xml/';
+$directorio = 'cuadernos/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -34,24 +34,27 @@ foreach ($ficheros as $fichero){
         $numSection=0;
         $numPregunta=0;
         $contador++;
-        if($contador!=0){
+        if($contador==132){
 
         $nombre_fichero = $directorio . $fichero . "/".$fichero.".xml";
         $ruta=$directorio . $fichero;
         echo "<br><br>".$nombre_fichero."<br><hr>";
 
+
         $folder = $fichero;
         $gestor = fopen($nombre_fichero, "r");
         $archivoxml = fread($gestor, filesize($nombre_fichero));
+        $archivoxml= str_replace("’","'",$archivoxml);
+        $archivoxml=utf8_decode($archivoxml);
         fclose($gestor);
         $dom = new DOMDocument;
         $dom->loadXML($archivoxml);
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        $inicioXml->setCategory($fichero);
-        /*$categoria = new Category();
-        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
+        //$inicioXml->setCategory($fichero);
+        $categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
         $inicioXml->setRuta($directorio.$fichero);
 
 
@@ -70,7 +73,7 @@ foreach ($ficheros as $fichero){
                     $descripcion++;
                     $numPregunta++;
                     echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo descripcion<br>";
-                    $xml=pregDescripcion($sectionPresentation->item(0),$inicioXml->getRoot(),$xml,$numPregunta,"Sección");
+                    $xml=pregDescripcion($sectionPresentation->item(0),$inicioXml->getRoot(),$xml,$numPregunta,"Secció");
                 }
             }
 
@@ -134,7 +137,7 @@ foreach ($ficheros as $fichero){
                             }else{
                                 //DESCRIPCION DE PREGUNTA
                                 $descripcion++;
-                                $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripción");
+                                $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripció");
                                 echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
                             }
 
@@ -162,7 +165,7 @@ foreach ($ficheros as $fichero){
                                 } else {
                                     //DESCRIPCION PREGUNTA
                                     echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
-                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripción");
+                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripció");
                                     $descripcion++;
                                 }
                             }
