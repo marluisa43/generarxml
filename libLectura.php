@@ -47,6 +47,11 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     //Titulo de la pregunta
     $preguntaSeleccion->setName(buscarTituloPreg($pregunta,$numero,""));
 
+    $flow = $pregunta->getElementsByTagName('flow');
+    //if($flow->length>1){
+        echo "++++MULTIPLE FLOW ".$flow->length;
+    //}
+
     //Seleccionar la zona de espuestas
     $respuestas = $pregunta->getElementsByTagName('response_label');
 
@@ -133,7 +138,6 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
 function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     $preguntaDescription=new PreguntaDescription($root);
     //Titulo de la descipcion
-    $numero=
     $preguntaDescription->setName(buscarTituloPreg($pregunta,$numero,$tipo));
     //Texto de la descripcion
     $texto=buscarmattext($pregunta);
@@ -165,6 +169,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
 
     //Buscar los id de las respuestas incorrectas
     $arrayNoCorrectas=buscarRespInc($pregunta);
+    var_dump($arrayNoCorrectas);
 
     // Titulo de la pregunta.
     $preguntaCloze->setName(buscarTituloPreg($pregunta,$numero,""));
@@ -267,9 +272,11 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
         //Texto del elemento.
         $answer->setText(agregarCdata(buscarmattext($respuesta)));
         $answer->setTextfeedback('');
-        $answers[]=$answer;
+        echo $posRespuesta;
+        $answers[$posRespuesta]=$answer;
         unset($answer);
     }
+    ksort($answers);
     $preguntaOrden->setAnswers($answers);
 
     //Buscar los id de los feedback
