@@ -177,7 +177,7 @@ class ComunPreguntas
     }
 
     public function addSon($text) {
-
+        $text=htmlspecialchars($text);
         $sons = array();
         $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
 
@@ -208,11 +208,11 @@ class ComunPreguntas
                 $text="<![CDATA[".$text;
             }
         }
-        return $text;
+        return htmlspecialchars_decode($text);
     }
 
     public function addFlash($text) {
-
+        $text=htmlspecialchars($text);
         $flashs = array();
         $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
 
@@ -242,7 +242,7 @@ class ComunPreguntas
                 $text="<![CDATA[".$text;
             }
         }
-        return $text;
+        return htmlspecialchars_decode($text);
     }
 
     /**

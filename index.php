@@ -9,6 +9,7 @@ require_once("PreguntaCloze.php");
 require_once("PreguntaOrden.php");
 require_once("Ddimageortext.php");
 require_once("Category.php");
+require_once ("PreguntaEnsayo.php");
 
 // Inicializamos el fichero xml con la categoria a la que pertenece las preguntas que vamos a poner en el xml.
 
@@ -18,8 +19,8 @@ $inicioXml->setCategory("prueba");
 // Obtenemos la categoria
 $categoria = new Category();
 $folder = "mud_up_down_pr_en";
-$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
-
+//$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+$inicioXml -> setCategory('$system$'.'/prueba');
 
 // Fin
 
@@ -33,7 +34,7 @@ $xml=$inicioXml->getInicioXML();
  *
  *
  */
-$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
+/*$preguntaCorta=new PreguntaCorta($inicioXml->getRoot());
 
 // Rellenamos la pregunta con los datos
 $preguntaCorta->setName("Respuesta corta");
@@ -90,7 +91,7 @@ $preguntaCorta->setHints($hints);
 
 
 // Llamamos para construir el xml correspondiente a esta pregunta.
-$xml=$preguntaCorta->createShortanswer($xml);
+$xml=$preguntaCorta->createShortanswer($xml);*/
 
 
 // Fin pregunta corta
@@ -473,6 +474,33 @@ $preguntaDdimageortext->setHints($hints);*/
 
 //creamos la pregunta
 //$xml=$preguntaDdimageortext->createDdimageortext($xml);
+
+/* ----------------------------------------------------------------- */
+/*
+ * Probar pregunta de ensayo
+ *
+ *
+ */
+$preguntaEnsayo=new PreguntaEnsayo($inicioXml->getRoot());
+
+// Rellenamos la pregunta con los datos
+$preguntaEnsayo->setName("Pregunta de Ensayo");
+
+$preguntaEnsayo->setQuestiontext("<![CDATA[Ordena els climes de la llista d'acord amb l'ordre dels números del mapa...<BR/><img src=\"@@PLUGINFILE@@/llaut.jpg\" alt=\"\" width=\"157\" height=\"303\" role=\"presentation\" class=\"img-responsive atto_image_button_middle\"><img src=\"climes002a.jpg\" alt=\"\" width=\"650\" height=\"471\" role=\"presentation\" class=\"img-responsive atto_image_button_text-bottom\"> otra <img src=\"violade.jpg\" alt=\"\" width=\"157\" height=\"340\" role=\"presentation\" class=\"img-responsive atto_image_button_text-bottom\">]]>");
+
+$preguntaEnsayo->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta de ensayo</p>]]>");
+$preguntaEnsayo->setDefaultgrade(1.0000000);
+$preguntaEnsayo->setPenalty(1.0000000);
+$preguntaEnsayo->setHidden(0);
+$preguntaEnsayo->setResponseformat('editor');
+$preguntaEnsayo->setResponserequired(1);
+$preguntaEnsayo->setResponsefieldlines(15);
+$preguntaEnsayo->setAttachments(0);
+$preguntaEnsayo->setAttachementsrequired(0);
+$preguntaEnsayo->setGradeinfo("<![CDATA[<p>Informacion para evaluadores</p>]]>");
+$preguntaEnsayo->setResponsetemplate("");
+
+$xml=$preguntaEnsayo->createEnsayo($xml);
 
 
 //----------------------------------------------
