@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
 <?php
 
 require_once("PreguntaCorta.php");
@@ -8,7 +14,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'cuadernos/';
+$directorio = 'xml/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -34,7 +40,7 @@ foreach ($ficheros as $fichero){
         $numSection=0;
         $numPregunta=0;
         $contador++;
-        if($contador==132){
+        if($contador==1){
 
         $nombre_fichero = $directorio . $fichero . "/".$fichero.".xml";
         $ruta=$directorio . $fichero;
@@ -42,19 +48,20 @@ foreach ($ficheros as $fichero){
 
 
         $folder = $fichero;
-        $gestor = fopen($nombre_fichero, "r");
-        $archivoxml = fread($gestor, filesize($nombre_fichero));
-        $archivoxml= str_replace("’","'",$archivoxml);
+        $archivoxml=file_get_contents($nombre_fichero);
+        $archivoxml=utf8_encode($archivoxml);
+        $archivoxml= str_replace("","'",$archivoxml);
         $archivoxml=utf8_decode($archivoxml);
-        fclose($gestor);
+
+        //fclose($gestor);
         $dom = new DOMDocument;
         $dom->loadXML($archivoxml);
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        //$inicioXml->setCategory($fichero);
-        $categoria = new Category();
-        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+        $inicioXml->setCategory($fichero);
+        /*$categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
         $inicioXml->setRuta($directorio.$fichero);
 
 
@@ -86,7 +93,10 @@ foreach ($ficheros as $fichero){
                 //Identificar de que tipo es cada pregunta
                 $choice = $pregunta->getElementsByTagName('render_choice');
                 if($choice->length!=0){
-                    if($choice->item(0)->hasAttribute("display")){
+                    /*Antigua comprobacion para diferenciar de multichoice de normal
+                     * if($choice->item(0)->hasAttribute("display")){*/
+                    $str = $pregunta->getElementsByTagName('flow');
+                    if ($str->length >1) {
                         $str = $pregunta->getElementsByTagName('response_str');
                         if ($str->length != 0) {
                             //Pregunta MIXTA
@@ -225,3 +235,6 @@ echo "Numero de preguntas de dibujo ".$preg_dibujo."<br>";
 echo "Numero de preguntas de descripcion ".$descripcion."<br>";
 echo "Numero de archivos flash ".$flash."<br>";
 echo "Numero de applets ".$contador_applet."<br>";
+?>
+</body>
+</html>
