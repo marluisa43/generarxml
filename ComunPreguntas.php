@@ -107,7 +107,7 @@ class ComunPreguntas
 
         $images = array();
         $re_extractImages='/< *img[^>]*src *= *["\']?([^"\']*)/ims';
-
+        $texto=$text;
         $valor=strpos($text,'<img ');
 
         while ($valor) {
@@ -124,25 +124,25 @@ class ComunPreguntas
                 $valorSustituir=$image;
                 $sustituto='@@PLUGINFILE@@/'.$image;
                 if(!in_array($sustituto,$introducidas)){
-                    $text=str_replace($valorSustituir,$sustituto,$text);
+                    $texto=str_replace($valorSustituir,$sustituto,$texto);
                     $introducidas[]=$sustituto;
                 }
             }
         }
-        if(substr_compare($text,'<![CDATA[',0,9)){
-            if (!substr_compare($text,']]>',-3,3)){
-                $text="<![CDATA[".$text;
+       if(mb_substr($texto,0,9)!='<![CDATA['){
+            if ( mb_substr($texto,-3,3)== ']]>'){
+                $texto="<![CDATA[".$texto;
             }
         }
 
-        return $text;
+        return $texto;
     }
 
     public function addHref($text) {
-        $text=htmlspecialchars($text);
+
         $htmls = array();
         $re_extractImages='/< *a[^>]*href *= *["\']?([^"\']*)/ims';
-
+        $texto=$text;
         $valor=strpos($text,'<a ');
 
         while ($valor) {
@@ -153,7 +153,6 @@ class ComunPreguntas
             $valor=strpos($text,'<a href=');
         }
 
-
         $introducidas=array();
         foreach ($htmls as $html){
             if (!strpos($html,'/')){
@@ -161,26 +160,28 @@ class ComunPreguntas
                 $sustituto='@@PLUGINFILE@@/'.$html;
                 if (!strpos($html,'?')){
                     if(!in_array($sustituto,$introducidas)){
-                        $text=str_replace($valorSustituir,$sustituto,$text);
+                        $texto=str_replace($valorSustituir,$sustituto,$texto);
                         $introducidas[]=$sustituto;
                     }
                 }
             }
         }
-        if(substr_compare($text,'<![CDATA[',0,9)){
-            if (!substr_compare($text,']]>',-3,3)){
-                $text="<![CDATA[".$text;
+
+        if(mb_substr($texto,0,9)!='<![CDATA['){
+            if ( mb_substr($texto,-3,3)== ']]>'){
+                $texto="<![CDATA[".$texto;
             }
         }
 
-        return htmlspecialchars_decode($text);
+
+        return $texto;
     }
 
     public function addSon($text) {
-        $text=htmlspecialchars($text);
+
         $sons = array();
         $re_extractSons='/< *source[^>]*src *= *["\']?([^"\']*)/ims';
-
+        $texto=$text;
         $valor=strpos($text,'<source ');
 
         while ($valor) {
@@ -197,25 +198,25 @@ class ComunPreguntas
                 $valorSustituir=$son;
                 $sustituto='@@PLUGINFILE@@/'.$son;
                 if(!in_array($sustituto,$introducidas)){
-                    $text=str_replace($valorSustituir,$sustituto,$text);
+                    $texto=str_replace($valorSustituir,$sustituto,$texto);
                     $introducidas[]=$sustituto;
                 }
             }
         }
 
-        if(substr_compare($text,'<![CDATA[',0,9)){
-            if (!substr_compare($text,']]>',-3,3)){
-                $text="<![CDATA[".$text;
+        if(mb_substr($texto,0,9)!='<![CDATA['){
+            if ( mb_substr($texto,-3,3)== ']]>'){
+                $texto="<![CDATA[".$texto;
             }
         }
-        return htmlspecialchars_decode($text);
+        return $texto;
     }
 
     public function addFlash($text) {
-        $text=htmlspecialchars($text);
+
         $flashs = array();
         $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
-
+        $texto=$text;
         $valor=strpos($text,'<embed ');
 
         while ($valor) {
@@ -232,17 +233,17 @@ class ComunPreguntas
                 $valorSustituir=$flash;
                 $sustituto='@@PLUGINFILE@@/'.$flash;
                 if(!in_array($sustituto,$introducidas)){
-                    $text=str_replace($valorSustituir,$sustituto,$text);
+                    $texto=str_replace($valorSustituir,$sustituto,$texto);
                     $introducidas[]=$sustituto;
                 }
             }
         }
-        if(substr_compare($text,'<![CDATA[',0,9)){
-            if (!substr_compare($text,']]>',-3,3)){
-                $text="<![CDATA[".$text;
+        if(mb_substr($texto,0,9)!='<![CDATA['){
+            if ( mb_substr($texto,-3,3)== ']]>'){
+                $texto="<![CDATA[".$texto;
             }
         }
-        return htmlspecialchars_decode($text);
+        return $texto;
     }
 
     /**
