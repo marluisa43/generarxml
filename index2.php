@@ -18,6 +18,7 @@ $directorio = 'xml/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
+$ensayo=0;
 $cerrada=0;
 $seleccion=0;
 $ordenar=0;
@@ -40,7 +41,7 @@ foreach ($ficheros as $fichero){
         $numSection=0;
         $numPregunta=0;
         $contador++;
-        if($contador==1){
+        if($contador!=0){
 
         $nombre_fichero = $directorio . $fichero . "/".$fichero.".xml";
         $ruta=$directorio . $fichero;
@@ -155,10 +156,25 @@ foreach ($ficheros as $fichero){
                     }else {
                         $str = $pregunta->getElementsByTagName('response_str');
                         if ($str->length != 0) {
-                            //Pregunta ABIERTA
-                            echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo oberta<br>";
-                            $abierta++;
-                            $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+
+                            $varequal = $pregunta->getElementsByTagName('varequal');
+                            if($varequal->length != 0){
+                                //Pregunta ABIERTA
+                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo oberta<br>";
+                                $abierta++;
+                                $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            }else{
+                                //Pregunta Ensayo
+                                $flow = $pregunta->getElementsByTagName('flow');
+                                if($flow->length<=2){
+                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ensayo simple<br>";
+                                    $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                }else{
+                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ensayo multiple<br>";
+                                    $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                }
+                                $ensayo++;
+                            }
                         } else {
                             //pregunta ARRASTRAR
                             $grp = $pregunta->getElementsByTagName('response_grp');
@@ -230,6 +246,7 @@ echo "Numero de preguntas de unir puntos ".$unir_puntos."<br>";
 echo "Numero de preguntas de seleccionar zonas de imagen ".$zona_imagen."<br>";
 echo "Numero de preguntas de seleccionar puntos sobre imagen ".$puntos_imagen."<br>";
 echo "Numero de preguntas abiertas ".$abierta."<br>";
+echo "Numero de preguntas de ensayo ".$ensayo."<br>";
 echo "Numero de preguntas de arrastrar ".$arrastrar."<br>";
 echo "Numero de preguntas de dibujo ".$preg_dibujo."<br>";
 echo "Numero de preguntas de descripcion ".$descripcion."<br>";

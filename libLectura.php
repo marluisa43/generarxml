@@ -3,6 +3,7 @@ require_once("PreguntaSeleccion.php");
 require_once("PreguntaDescription.php");
 require_once("PreguntaCloze.php");
 require_once("PreguntaOrden.php");
+require_once("PreguntaEnsayo.php");
 require_once("Ddimageortext.php");
 require_once("Answer.php");
 require_once("Hint.php");
@@ -44,6 +45,9 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     $idFeedbackIncorrecto=buscarIdFeedback($pregunta,"False");
     //Buscar las respuestas que no son correctas
     $arrayNoCorrectas=buscarRespInc($pregunta);
+
+    //Buscar las respuestas que son correctas
+    $arrayCorrectas=buscarRespCor($pregunta);
     //Titulo de la pregunta
     $preguntaSeleccion->setName(buscarTituloPreg($pregunta,$numero,""));
 
@@ -51,13 +55,13 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     $respuestas = $pregunta->getElementsByTagName('response_label');
 
     //Calcular el porcentaje para cada respuesta válida;
-    if($respuestas->length==count($arrayNoCorrectas)){
+    if(count($arrayCorrectas)<=0){
         $porcentaje=0;
         echo "****** NO HAY RESPUESTAS CORRECTAS<br>";
     }else{
-        $porcentaje = (100 / ($respuestas->length - count($arrayNoCorrectas)));
+        $porcentaje = (100 / count($arrayCorrectas));
     }
-    if($respuestas->length - count($arrayNoCorrectas)==1){
+    if(count($arrayNoCorrectas)==1){
         $preguntaSeleccion->setSingle(true);
     }else{
         $preguntaSeleccion->setSingle(false);
@@ -73,7 +77,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
         //id de respuesta
         $idRespuesta=$respuesta->getAttribute('ident');
         //Marcar las respuestas correctas
-        $answer->setAttriFraction(marcarPregCorrectas($idRespuesta,$arrayNoCorrectas,$porcentaje));
+        $answer->setAttriFraction(marcarPregCorrectas($idRespuesta,$arrayCorrectas,$porcentaje));
 
         $answers[] = $answer;
         unset($answer);
@@ -151,6 +155,29 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     return $xmlPreg;
 }
 
+function pregEnsayo($pregunta, $root, $xml,$numero){
+    $preguntaEnsayo=new PreguntaEnsayo($root);
+
+    $preguntaEnsayo->setName(buscarTituloPreg($pregunta,$numero,""));
+
+    $preguntaEnsayo->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+
+    //$preguntaEnsayo->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta de ensayo</p>]]>");
+    $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
+    $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta,"False"));
+    $preguntaEnsayo->setHidden(false);
+    $preguntaEnsayo->setResponseformat('editor');
+    $preguntaEnsayo->setResponserequired(1);
+    $preguntaEnsayo->setResponsefieldlines(15);
+    $preguntaEnsayo->setAttachments(0);
+    $preguntaEnsayo->setAttachementsrequired(0);
+    //$preguntaEnsayo->setGradeinfo("<![CDATA[<p>Informacion para evaluadores</p>]]>");
+    $preguntaEnsayo->setResponsetemplate("");
+
+    $xmlPreg=$preguntaEnsayo->createEnsayo($xml);
+    return $xmlPreg;
+}
+
 /**
  * Transforma las preguntas abiertas, cerradas y mixtas en el
  * formato correcto de Moodle
@@ -163,7 +190,10 @@ function pregCloze($pregunta, $root, $xml,$numero){
     $preguntaCloze = new PreguntaCloze($root);
 
     //Buscar los id de las respuestas incorrectas
-    $arrayNoCorrectas=buscarRespInc($pregunta);
+    //$arrayNoCorrectas=buscarRespInc($pregunta);
+
+    //Buscar los id de las respuestas incorrectas
+    $arrayCorrectas=buscarRespCor($pregunta);
 
     // Titulo de la pregunta.
     $preguntaCloze->setName(buscarTituloPreg($pregunta,$numero,""));
@@ -187,7 +217,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
                         $textoPreg=$textoPreg.buscarmattext($item);
                     }elseif($item->localName=="response_lid"){
                         //elemento select
-                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayNoCorrectas);
+                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayCorrectas);
                     }elseif($item->localName=="response_str"){
                         //elemento input
                         $idRespuesta=$item->getAttribute('ident');
@@ -252,6 +282,11 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
     //Buscar el orden correcto de las respuestas
     $arrayCorrectas=buscarRespOrdenar($pregunta);
 
+    $response_lid = $pregunta->getElementsByTagName('response_lid');
+    if($response_lid->length>1){
+        echo "++++ Flow ordenar ". $response_lid->length."<br>";
+    }
+
     //Seleccionar la zona de respuestas
     $respuestas = $pregunta->getElementsByTagName('response_label');
     foreach ($respuestas as $key => $respuesta) {
@@ -266,7 +301,6 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
         //Texto del elemento.
         $answer->setText(agregarCdata(buscarmattext($respuesta)));
         $answer->setTextfeedback('');
-        echo $posRespuesta;
         $answers[$posRespuesta]=$answer;
         unset($answer);
     }
@@ -432,12 +466,12 @@ function leerPregMultiCloze($xml, $arrayRespuesta){
     foreach ($respuestas as $key => $respuesta) {
         $id=$respuesta->getAttribute("ident");
         if (in_array($id, $arrayRespuesta)) {
-            //echo $id."-----FALSA----<br>";
-            $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
-        } else {
             //echo $id."-----VERDA----<br>";
             $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
             $comprobacion=1;
+        } else {
+            //echo $id."-----FALSA----<br>";
+            $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
         }
     }
     if($comprobacion==0){
@@ -570,6 +604,30 @@ function buscarRespInc($xml){
     return $array;
 }
 
+function buscarRespCor($xml){
+    $arrayCorrectas= array();
+    //Seleccionar la zona donde se encuentra las respuestas y el feedback
+    $listaRespCorrectas = $xml->getElementsByTagName('respcondition');
+    foreach ($listaRespCorrectas as $key => $zonaResp) {
+        if($key==0) {
+            //Seleccionamos las preguntas y las metemos en un array de respuestas incorrectas
+            //$respCorrectas = $zonaResp->getElementsByTagName('and');
+            $respuestas = $zonaResp->getElementsByTagName('*');
+            foreach ($respuestas as $key => $respuesta) {
+                echo "-----".$respuesta->nodeName."<br>";
+                if($respuesta->nodeName=="varequal" or $respuesta->nodeName=="varsubset"){
+                    if($respuesta->parentNode->nodeName=="and" or $respuesta->parentNode->nodeName=="or"){
+                        $arrayCorrectas[] = trim($respuesta->nodeValue);
+                    }else{
+                        $arrayIncorrectas[] = trim($respuesta->nodeValue);
+                    }
+                }
+            }
+        }
+    }
+    return $arrayCorrectas;
+}
+
 function buscarRespOrdenar($xml){
     $listaRespCorrectas = $xml->getElementsByTagName('varequal');
     $respCorrectas=explode(",",$listaRespCorrectas->item(0)->nodeValue);
@@ -578,12 +636,12 @@ function buscarRespOrdenar($xml){
 
 
 function marcarPregCorrectas($id,$array,$porcentaje){
-    //Buscar el id dentro del array de respuestas incorrectas
+    //Buscar el id dentro del array de respuestas correctas
     //para identificar si la respuesta es correcta o incorrecta
     if (in_array($id, $array)) {
-        return 0;
-    } else {
         return $porcentaje;
+    } else {
+        return 0;
     }
 }
 
@@ -664,7 +722,7 @@ function tipoTexto($nodo){
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
             $texto=transformarFlash($nodo);
-            echo "++++Archivo flash";
+            echo "++++Archivo flash<br>";
         }else{
             //echo "NO SE***************************************************";
         }
