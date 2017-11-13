@@ -61,7 +61,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     }else{
         $porcentaje = (100 / count($arrayCorrectas));
     }
-    if(count($arrayNoCorrectas)==1){
+    if(count($arrayCorrectas)==1){
         $preguntaSeleccion->setSingle(true);
     }else{
         $preguntaSeleccion->setSingle(false);
@@ -155,12 +155,21 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     return $xmlPreg;
 }
 
-function pregEnsayo($pregunta, $root, $xml,$numero){
+function pregEnsayo($pregunta, $root, $xml,$numero,$bloque){
     $preguntaEnsayo=new PreguntaEnsayo($root);
-
+    $enunciadoPreg='';
     $preguntaEnsayo->setName(buscarTituloPreg($pregunta,$numero,""));
-
-    $preguntaEnsayo->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+    $flows = $pregunta->getElementsByTagName('flow');
+    foreach ($flows as $key => $flow){
+        if($flow->parentNode->nodeName!="flow"){
+            $enunciadoPreg=buscarmattext($flow);
+        }
+        if($key==$bloque and $bloque!=0){
+            $enunciadoPreg=$enunciadoPreg."<br>".buscarmattext($flow);
+        }
+    }
+    echo "enunciado ensayo ".$enunciadoPreg."<br>";
+    $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
 
     //$preguntaEnsayo->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta de ensayo</p>]]>");
     $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
@@ -281,11 +290,6 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
 
     //Buscar el orden correcto de las respuestas
     $arrayCorrectas=buscarRespOrdenar($pregunta);
-
-    $response_lid = $pregunta->getElementsByTagName('response_lid');
-    if($response_lid->length>1){
-        echo "++++ Flow ordenar ". $response_lid->length."<br>";
-    }
 
     //Seleccionar la zona de respuestas
     $respuestas = $pregunta->getElementsByTagName('response_label');
@@ -614,7 +618,6 @@ function buscarRespCor($xml){
             //$respCorrectas = $zonaResp->getElementsByTagName('and');
             $respuestas = $zonaResp->getElementsByTagName('*');
             foreach ($respuestas as $key => $respuesta) {
-                echo "-----".$respuesta->nodeName."<br>";
                 if($respuesta->nodeName=="varequal" or $respuesta->nodeName=="varsubset"){
                     if($respuesta->parentNode->nodeName=="and" or $respuesta->parentNode->nodeName=="or"){
                         $arrayCorrectas[] = trim($respuesta->nodeValue);

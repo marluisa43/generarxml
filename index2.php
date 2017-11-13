@@ -41,6 +41,7 @@ foreach ($ficheros as $fichero){
         $numSection=0;
         $numPregunta=0;
         $contador++;
+        /////////////////////////// CONTADOR
         if($contador!=0){
 
         $nombre_fichero = $directorio . $fichero . "/".$fichero.".xml";
@@ -165,13 +166,17 @@ foreach ($ficheros as $fichero){
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             }else{
                                 //Pregunta Ensayo
-                                $flow = $pregunta->getElementsByTagName('flow');
-                                if($flow->length<=2){
+                                $flows = $pregunta->getElementsByTagName('flow');
+                                if($flows->length<=2){
                                     echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ensayo simple<br>";
-                                    $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                    $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,0);
                                 }else{
-                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ensayo multiple<br>";
-                                    $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                    foreach ($flows as $key => $flow){
+                                        if($flow->parentNode->nodeName=="flow"){
+                                            echo "Archivo " . $contador . " Pregunta " . $numPregunta.".".($key) . " Tipo ensayo multiple<br>";
+                                            $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta.".".($key+1),$key);
+                                        }
+                                    }
                                 }
                                 $ensayo++;
                             }
