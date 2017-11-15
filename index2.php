@@ -174,7 +174,7 @@ foreach ($ficheros as $fichero){
                                     foreach ($flows as $key => $flow){
                                         if($flow->parentNode->nodeName=="flow"){
                                             echo "Archivo " . $contador . " Pregunta " . $numPregunta.".".($key) . " Tipo ensayo multiple<br>";
-                                            $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta.".".($key+1),$key);
+                                            $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta.".".$key,$key);
                                         }
                                     }
                                 }
