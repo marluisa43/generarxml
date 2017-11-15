@@ -168,7 +168,6 @@ function pregEnsayo($pregunta, $root, $xml,$numero,$bloque){
             $enunciadoPreg=$enunciadoPreg."<br>".buscarmattext($flow);
         }
     }
-    echo "enunciado ensayo ".$enunciadoPreg."<br>";
     $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
 
     //$preguntaEnsayo->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta de ensayo</p>]]>");
