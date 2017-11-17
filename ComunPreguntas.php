@@ -560,6 +560,8 @@ class ComunPreguntas
                     $file->setAttribute('name', substr($image, 15));
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
+                }else{
+                    echo '****** NO EXISTE LA IMAGEN DE FONDO '.substr($image,15)."<br>";
                 }
 
             }
@@ -606,6 +608,8 @@ class ComunPreguntas
                     $file->setAttribute('name', substr($html, 15));
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
+                }else{
+                    echo '****** NO EXISTE HTML '.substr($html,15)."<br>";
                 }
 
             }
@@ -647,6 +651,8 @@ class ComunPreguntas
                     $file->setAttribute('name', substr($son, 15));
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
+                }else{
+                    echo '****** NO EXISTE MULTIMEDIA '.substr($son,15)."<br>";
                 }
             }
         }
@@ -691,6 +697,8 @@ class ComunPreguntas
                     $file->setAttribute('name', substr($flash, 15));
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
+                }else{
+                    echo '****** NO EXISTE EL FICHERO FLASH '.substr($flash,15)."<br>";
                 }
 
             }

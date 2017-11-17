@@ -134,6 +134,8 @@ class Ddimageortext extends ComunPreguntas
             $file->setAttribute('name',$image);
             $file->setAttribute('path','/');
             $file->setAttribute('encoding',"base64");
+        }else{
+            echo '****** NO EXISTE LA IMAGEN DE FONDO '.$image."<br>";
         }
 
 
@@ -165,6 +167,8 @@ class Ddimageortext extends ComunPreguntas
                     $fileimg->setAttribute('name',$drag->getFile());
                     $fileimg->setAttribute('path','/');
                     $fileimg->setAttribute('encoding',"base64");
+                }else{
+                    echo '****** NO EXISTE LA IMAGEN DRAG '.$drag->getFile()."<br>";
                 }
 
             }

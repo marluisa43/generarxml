@@ -402,6 +402,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
 
     //Seleccionar la zona de respuestas
     $respuestas = $pregunta->getElementsByTagName('response_label');
+
     foreach ($respuestas as $key => $respuesta) {
         $answer= new Answer();
 
@@ -494,8 +495,6 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         echo "****** ARRASTRAR - IMAGEN DE FONDO VACIA <br>";
         $nuevoSize=0;
     }
-
-
 
     $ims_render=$pregunta->getElementsByTagName('ims_render_object');
 
