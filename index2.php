@@ -14,7 +14,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'xml/';
+$directorio = 'cuadernos/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -53,6 +53,13 @@ foreach ($ficheros as $fichero){
         $archivoxml=file_get_contents($nombre_fichero);
         $archivoxml=utf8_encode($archivoxml);
         $archivoxml= str_replace("","'",$archivoxml);
+        $archivoxml= str_replace("",'"',$archivoxml);
+        $archivoxml= str_replace("",'"',$archivoxml);
+        $archivoxml= str_replace("","&euro;",$archivoxml);
+        $archivoxml= str_replace("","&#150;",$archivoxml);
+        $archivoxml= str_replace("","&#133;",$archivoxml);
+        $archivoxml= str_replace("","&#149;",$archivoxml);
+        $archivoxml= str_replace("","&#151;",$archivoxml);
         $archivoxml=utf8_decode($archivoxml);
 
         //fclose($gestor);
@@ -61,9 +68,9 @@ foreach ($ficheros as $fichero){
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        $inicioXml->setCategory($fichero);
-        /*$categoria = new Category();
-        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
+        //$inicioXml->setCategory($fichero);
+        $categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
         $inicioXml->setRuta($directorio.$fichero);
 
 
@@ -165,22 +172,10 @@ foreach ($ficheros as $fichero){
                                 $abierta++;
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             }else{
-                                //Pregunta Ensayo
-                                $flows = $pregunta->getElementsByTagName('flow');
-                                if($flows->length<=2){
-                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ensayo simple<br>";
-                                    $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,0);
-                                }else{
-                                    foreach ($flows as $key => $flow){
-                                        if($flow->parentNode->nodeName=="flow"){
-                                            echo "Archivo " . $contador . " Pregunta " . $numPregunta.".".($key) . " Tipo ensayo multiple<br>";
-                                            $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta.".".$key,$key);
-                                        }
-                                    }
-                                }
+                                $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,$contador);
                                 $ensayo++;
                             }
-                        } else {
+                        }else {
                             //pregunta ARRASTRAR
                             $grp = $pregunta->getElementsByTagName('response_grp');
                             if ($grp->length != 0) {
@@ -205,11 +200,11 @@ foreach ($ficheros as $fichero){
                 }
             }
         }
-        /*$filexml = new SimpleXMLElement($nombre_fichero,NULL,true);
+        $filexml = new SimpleXMLElement($nombre_fichero,NULL,true);
         $resultsecciones = $filexml->xpath('/questestinterop/assessment/section/presentation_material/flow_mat/material/matimage[@imagtype="application/x-shockwave-flash"]');
         $flash+=count($resultsecciones);
         $results = $filexml->xpath('/questestinterop/assessment/section/item/presentation/flow/material/matimage[@imagtype="application/x-shockwave-flash"]');
-        $flash+=count($results);*/
+        $flash+=count($results);
 
         //Guardar el contenido en un archivo xml
         /*$temp_file=tempnam(sys_get_temp_dir(), 'XML_').'.xml';

@@ -155,36 +155,146 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     return $xmlPreg;
 }
 
-function pregEnsayo($pregunta, $root, $xml,$numero,$bloque){
-    $preguntaEnsayo=new PreguntaEnsayo($root);
+function pregEnsayo($pregunta, $root, $xml,$numero,$contador){
+
     $enunciadoPreg='';
-    $preguntaEnsayo->setName(buscarTituloPreg($pregunta,$numero,""));
+    $enunciadoCabecera='';
+    $nu="0";
+
     $flows = $pregunta->getElementsByTagName('flow');
-    foreach ($flows as $key => $flow){
-        if($flow->parentNode->nodeName!="flow"){
-            $enunciadoPreg=buscarmattext($flow);
+
+
+    if($flows->length<=2) {
+        $r=$flows->item(0)->getElementsByTagName('response_str');
+        if ($r->length>1){
+            echo ("Archivo " . $contador . " Pregunta " . $numero . " Tipo ensayo multiple en misma pregunta<br>");
+        }else{
+            echo "Archivo " . $contador . " Pregunta " . $numero . " Tipo ensayo simple<br>";
         }
-        if($key==$bloque and $bloque!=0){
-            $enunciadoPreg=$enunciadoPreg."<br>".buscarmattext($flow);
+
+        foreach ($flows as $key => $flow){
+            if($key==0 and $flow->parentNode->nodeName!="flow"){
+                $enunciadoPreg=buscarmattext($flow);
+            }else{
+                $enunciadoPreg=$enunciadoPreg.buscarmattextTodos($flow);
+
+            }
+        }
+
+        $enunciadoCabecera = $enunciadoPreg;
+
+        $preguntaEnsayo = new PreguntaEnsayo($root);
+
+        $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero, ""));
+        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoCabecera));
+
+        $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
+        $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
+        $preguntaEnsayo->setHidden(false);
+        $preguntaEnsayo->setResponseformat('editor');
+        $preguntaEnsayo->setResponserequired(1);
+        $preguntaEnsayo->setResponsefieldlines(15);
+        $preguntaEnsayo->setAttachments(0);
+        $preguntaEnsayo->setAttachementsrequired(0);
+        $preguntaEnsayo->setResponsetemplate("");
+
+        $xml = $preguntaEnsayo->createEnsayo($xml);
+    }else {
+        echo "Archivo " . $contador . " Pregunta " . $numero . " Tipo ensayo multiple<br>";
+        $enunciadoPreg="";
+        $numeroPreguntas=$pregunta->getElementsByTagName("response_str")->length;
+        $nr=0;
+        foreach($flows as $keyf=>$flow){
+
+            // materiales que hay dentro de cada flow
+            $materials = $flow->getElementsByTagName('material');
+
+            if ($keyf==0 and $flow->parentNode->nodeName != "flow") {
+                $enunciadoCabecera = buscarmattext($flow);
+
+            }else {
+
+                $x = $flow->getElementsByTagName('response_str');
+
+                if ($x->length == 0) {
+                        $enunciadoPreg =$enunciadoPreg."<br>" . buscarmattext($flow);
+
+                }else{
+                    // Hay una pregunta de ensayo
+
+                    $r=$flow->getElementsByTagName('response_str');
+                    if ($r->length>1){
+                        echo (" Tipo ensayo multiple en misma pregunta<br>");
+                    }
+
+                    if ($nr<$numeroPreguntas-1){
+                        $enunciadoPreg = $enunciadoPreg.buscarmattextTodos($flow);
+                        $enunciadoPreg = $enunciadoCabecera . "<br>" . $enunciadoPreg;
+                        $preguntaEnsayo = new PreguntaEnsayo($root);
+                        $nu++;
+                        $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero . "." . $nu, ""));
+                        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
+
+                        $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
+                        $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
+                        $preguntaEnsayo->setHidden(false);
+                        $preguntaEnsayo->setResponseformat('editor');
+                        $preguntaEnsayo->setResponserequired(1);
+                        $preguntaEnsayo->setResponsefieldlines(15);
+                        $preguntaEnsayo->setAttachments(0);
+                        $preguntaEnsayo->setAttachementsrequired(0);
+                        $preguntaEnsayo->setResponsetemplate("");
+
+                        $xml = $preguntaEnsayo->createEnsayo($xml);
+                        $enunciadoPreg="";
+                        $nr+=$x->length;
+                    }else{
+                        $enunciadoPreg = $enunciadoPreg.buscarmattextTodos($flow);
+                    }
+                }
+            }
+        }
+
+        // última pregunta de ensayo con los textos que hayan debajo, si los hubiera.
+        $enunciadoPreg = $enunciadoCabecera . "<br>" . $enunciadoPreg;
+        $preguntaEnsayo = new PreguntaEnsayo($root);
+        $nu++;
+        $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero . "." . $nu, ""));
+        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
+
+        $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
+        $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
+        $preguntaEnsayo->setHidden(false);
+        $preguntaEnsayo->setResponseformat('editor');
+        $preguntaEnsayo->setResponserequired(1);
+        $preguntaEnsayo->setResponsefieldlines(15);
+        $preguntaEnsayo->setAttachments(0);
+        $preguntaEnsayo->setAttachementsrequired(0);
+        $preguntaEnsayo->setResponsetemplate("");
+
+        $xml = $preguntaEnsayo->createEnsayo($xml);
+    }
+
+    return $xml;
+}
+
+function buscarmattextTodos($xml){
+
+    $texto="";
+    $materials = $xml->getElementsByTagName('material');
+    if($materials->length==0){
+        $texto="";
+    }else{
+        foreach($materials as $tex){
+            $texto=$texto.$tex->nodeValue;
         }
     }
-    $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
-
-    //$preguntaEnsayo->setGeneralfeedback("<![CDATA[<p>Retroalimentación de respuesta de ensayo</p>]]>");
-    $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
-    $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta,"False"));
-    $preguntaEnsayo->setHidden(false);
-    $preguntaEnsayo->setResponseformat('editor');
-    $preguntaEnsayo->setResponserequired(1);
-    $preguntaEnsayo->setResponsefieldlines(15);
-    $preguntaEnsayo->setAttachments(0);
-    $preguntaEnsayo->setAttachementsrequired(0);
-    //$preguntaEnsayo->setGradeinfo("<![CDATA[<p>Informacion para evaluadores</p>]]>");
-    $preguntaEnsayo->setResponsetemplate("");
-
-    $xmlPreg=$preguntaEnsayo->createEnsayo($xml);
-    return $xmlPreg;
+    return $texto;
 }
+
+
+
+
 
 /**
  * Transforma las preguntas abiertas, cerradas y mixtas en el
