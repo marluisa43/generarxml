@@ -326,16 +326,18 @@ function pregCloze($pregunta, $root, $xml,$numero){
     $textoPreg=$textoPreg.buscarmattext($pregunta);
     //Seleccionar zona de respuestas
     $respuestas = $pregunta->getElementsByTagName('flow');
+    $listaDesplegable=0;
     foreach ($respuestas as $key=>$respuesta){
         if($key!=0){
-            foreach ($respuesta->childNodes as $key=>$item) {
+            foreach ($respuesta->childNodes as $key2=>$item) {
                 if (is_a($item, 'DOMElement')) {
                     if($item->localName=="material"){
                         //texto
                         $textoPreg=$textoPreg.buscarmattext($item);
                     }elseif($item->localName=="response_lid"){
                         //elemento select
-                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayCorrectas);
+                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayCorrectas,$listaDesplegable);
+                        $listaDesplegable++;
                     }elseif($item->localName=="response_str"){
                         //elemento input
                         $idRespuesta=$item->getAttribute('ident');
@@ -570,20 +572,38 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
  * @param $arrayRespuesta
  * @return string
  */
-function leerPregMultiCloze($xml, $arrayRespuesta){
+function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     //{1:MULTICHOICE:rojo~%100%blanco~negro}
     $comprobacion=0;
+    $modo=0;
     $texto='{1:MULTICHOICE:';
     $respuestas = $xml->getElementsByTagName('response_label');
+    if($respuestas->length!=0){
+        if($respuestas->item(0)->getAttribute("ident")=="lab01"){
+            echo "****** Activado modo id iguales<br>";
+            $modo=1;
+        }
+    }
     foreach ($respuestas as $key => $respuesta) {
         $id=$respuesta->getAttribute("ident");
-        if (in_array($id, $arrayRespuesta)) {
-            //echo $id."-----VERDA----<br>";
-            $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
-            $comprobacion=1;
-        } else {
-            //echo $id."-----FALSA----<br>";
-            $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
+        if($modo==1){
+            if ($arrayRespuesta[$bloque]==$id) {
+                //echo $id."-----VERDAD----<br>";
+                $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
+                $comprobacion++;
+            } else {
+                //echo $id."-----FALSA----<br>";
+                $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
+            }
+        }else{
+            if (in_array($id, $arrayRespuesta)) {
+                //echo $id."-----VERDAD----<br>";
+                $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
+                $comprobacion++;
+            } else {
+                //echo $id."-----FALSA----<br>";
+                $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
+            }
         }
     }
     if($comprobacion==0){
@@ -593,6 +613,9 @@ function leerPregMultiCloze($xml, $arrayRespuesta){
         }
         echo "****** No hay respuesta correcta multichoice<br>";
         $texto=$texto."%100%NULL~";
+    }
+    if($comprobacion>1){
+        echo "****** Hay varias respuestas correctas multichoice<br>";
     }
     $texto=trim($texto, '~');
     $texto=$texto."}";

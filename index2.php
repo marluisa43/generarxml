@@ -14,7 +14,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'cuadernos/';
+$directorio = 'xml/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -68,9 +68,9 @@ foreach ($ficheros as $fichero){
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        //$inicioXml->setCategory($fichero);
-        $categoria = new Category();
-        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+        $inicioXml->setCategory($fichero);
+        /*$categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));*/
         $inicioXml->setRuta($directorio.$fichero);
 
 
@@ -113,10 +113,17 @@ foreach ($ficheros as $fichero){
                             $mixta++;
                             $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                         } else {
-                            //Pregunta CERRADA
-                            echo "Archivo ".$contador." Pregunta ".$numPregunta." tancada<br>";
-                            $cerrada++;
-                            $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            $flow_mat = $pregunta->getElementsByTagName('flow_mat');
+                            if ($flow_mat->length != 0) {
+                                //Pregunta CERRADA
+                                echo "Archivo ".$contador." Pregunta ".$numPregunta." tancada<br>";
+                                $cerrada++;
+                                $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            }
+                            else{
+                                echo "Archivo ".$contador." Pregunta ".$numPregunta." seleccion multiple<br>";
+                                $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            }
                         }
                     }else{
                         //Pregunta SELECCION
@@ -129,9 +136,15 @@ foreach ($ficheros as $fichero){
                     if ($lid->length != 0) {
                         //Pregunta ORDENAR
                         if($lid->item(0)->getAttribute('rcardinality')=="Ordered") {
-                            echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar<br>";
-                            $ordenar++;
-                            $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            if ($lid->length>1) {
+                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar multiple<br>";
+                                $ordenar++;
+                                $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            }else{
+                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar simple<br>";
+                                $ordenar++;
+                                $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                            }
                         }else{
                             $zona_processing = $pregunta->getElementsByTagName('resprocessing');
                             if ($zona_processing->length != 0) {
