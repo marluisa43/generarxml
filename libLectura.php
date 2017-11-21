@@ -147,6 +147,9 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
             $texto=buscarmattext($segundoNivel->item(1));
         }
     }
+    if($tipo=="applet"){
+        $texto=$texto."<br>APPLET";
+    }
     $preguntaDescription->setQuestiontext(agregarCdata($texto));
     $preguntaDescription->setGeneralfeedback('');
 
@@ -566,6 +569,10 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
     //creamos la pregunta
     $xmlPreg=$preguntaDdimageortext->createDdimageortext($xml);
     return $xmlPreg;
+}
+
+function pregApplet($pregunta, $root, $xml,$numero){
+
 }
 
 /**

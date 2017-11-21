@@ -121,8 +121,10 @@ foreach ($ficheros as $fichero){
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             }
                             else{
+                                //Pregunta SELECCION
                                 echo "Archivo ".$contador." Pregunta ".$numPregunta." seleccion multiple<br>";
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                $seleccion++;
                             }
                         }
                     }else{
@@ -152,6 +154,7 @@ foreach ($ficheros as $fichero){
                                 if ($zona_feed->length != 0) {
                                     //Pregunta UNIR PUNTOS
                                     echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo unir puntos<br>";
+                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                     $unir_puntos++;
                                 }else{
                                     $zona_and = $pregunta->getElementsByTagName('and');
@@ -159,10 +162,12 @@ foreach ($ficheros as $fichero){
                                     if ($zona_no->length != 0) {
                                         //pregunta ZONA IMAGEN
                                         echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo zona imagen<br>";
+                                        $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                         $zona_imagen++;
                                     }else{
                                         //pregunta PUNTOS IMAGEN
                                         echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo puntos imagen<br>";
+                                        $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                         $puntos_imagen++;
                                     }
                                 }
@@ -200,6 +205,7 @@ foreach ($ficheros as $fichero){
                                 if ($dibujo->length != 0) {
                                     //pregunta DIBUJO
                                     echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo dibujo<br>";
+                                    $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                     $preg_dibujo++;
                                 } else {
                                     //DESCRIPCION PREGUNTA
