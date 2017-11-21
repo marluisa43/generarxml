@@ -131,20 +131,24 @@ class ComunPreguntas
         }
 
         // Comprobar cuales son internas, y cuales son externas.
-        $texto=$texto;
-        $valor=strpos($text,'<img ');
+        $textoB=$texto;
+        $images = array();
+        $valor=strpos($textoB,'<img ');
 
         while ($valor) {
-            preg_match_all( $re_extractImages  , $text , $matches);
+            preg_match_all( $re_extractImages  , $textoB , $matches);
             $images=$matches[1];
-            $posicion= strpos($text,'<img src=');
-            $text = substr($text,$posicion);
-            $valor=strpos($text,'<img src=');
+            $posicion= strpos($textoB,'<img src=');
+            $textoB = substr($textoB,$posicion);
+            $valor=strpos($textoB,'<img src=');
         }
 
         foreach($images as $image){
-            if (strpos($image,'@@PLUGINFILE@@')!==0){
-                echo ("<br>ENLACE EXTERIOR: ".$image."<br>");
+            if (strpos($image,'@@PLUGINFILE@@')===false){
+                if (strpos($image,'/')!==false){
+                    $urlexists = $this->url_exists( $image );
+                    echo ("<br>ENLACE EXTERIOR: ".$image."<br>");
+                }
             }
         }
 
@@ -191,20 +195,24 @@ class ComunPreguntas
 
 
         // Comprobar cuales son internas, y cuales son externas.
-        $texto=$texto;
-        $valor=strpos($text,'<a ');
+        $textoB=$texto;
+        $htmls = array();
+        $valor=strpos($textoB,'<a ');
 
         while ($valor) {
-            preg_match_all( $re_extractImages  , $text , $matches);
+            preg_match_all( $re_extractImages  , $textoB , $matches);
             $htmls=$matches[1];
-            $posicion= strpos($text,'<a href=');
-            $text = substr($text,$posicion);
-            $valor=strpos($text,'<a href=');
+            $posicion= strpos($textoB,'<a href=');
+            $textoB = substr($textoB,$posicion);
+            $valor=strpos($textoB,'<a href=');
         }
 
         foreach($htmls as $html){
-            if (strpos($html,'@@PLUGINFILE@@')!==0){
-                echo ("<br>ENLACE EXTERIOR: ".$html."<br>");
+            if (strpos($html,'@@PLUGINFILE@@')===false){
+                if (strpos($html,'/')!==false){
+                    $urlexists = $this->url_exists( $html );
+                    echo ("<br>ENLACE EXTERIOR: ".$html."<br>");
+                }
             }
         }
 
@@ -248,19 +256,23 @@ class ComunPreguntas
         }
 
         // Comprobar cual es exterior
-        $texto=$text;
-        $valor=strpos($text,'<source ');
+        $textoB=$texto;
+        $sons = array();
+        $valor=strpos($textoB,'<source ');
 
         while ($valor) {
-            preg_match_all( $re_extractSons  , $text , $matches);
+            preg_match_all( $re_extractSons  , $textoB , $matches);
             $sons=$matches[1];
-            $posicion= strpos($text,'<source src=');
-            $text = substr($text,$posicion);
-            $valor=strpos($text,'<source src=');
+            $posicion= strpos($textoB,'<source src=');
+            $textoB = substr($textoB,$posicion);
+            $valor=strpos($textoB,'<source src=');
         }
         foreach($sons as $son){
-            if (strpos($son,'@@PLUGINFILE@@')!==0){
-                echo ("<br>ENLACE EXTERIOR: ".$son."<br>");
+            if (strpos($son,'@@PLUGINFILE@@')===false){
+                if (strpos($son,'/')!==false) {
+                    $urlexists = $this->url_exists( $son );
+                    echo("<br>ENLACE EXTERIOR: " . $son . "<br>");
+                }
             }
         }
 
@@ -277,12 +289,12 @@ class ComunPreguntas
     public function addFlash($text) {
 
         $flashs = array();
-        $re_extractImages='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
+        $re_extractFlash='/< *embed[^>]*src *= *["\']?([^"\']*)/ims';
         $texto=$text;
         $valor=strpos($text,'<embed ');
 
         while ($valor) {
-            preg_match_all( $re_extractImages  , $text , $matches);
+            preg_match_all( $re_extractFlash  , $text , $matches);
             $flashs=$matches[1];
             $posicion= strpos($text,'<embed src=');
             $text = substr($text,$posicion);
@@ -301,22 +313,29 @@ class ComunPreguntas
             }
         }
 
-        // Comprobar si es exterior
-        $texto=$text;
-        $valor=strpos($text,'<embed ');
+        // Comprobar si es exterior el enlace
+        $textoB=$texto;
+        $flashs = array();
+        $valor=strpos($textoB,'embed');
 
         while ($valor) {
-            preg_match_all( $re_extractImages  , $text , $matches);
+            preg_match_all( $re_extractFlash  , $textoB , $matches);
             $flashs=$matches[1];
-            $posicion= strpos($text,'<embed src=');
-            $text = substr($text,$posicion);
-            $valor=strpos($text,'<embed src=');
+
+            $posicion= strpos($textoB,'embed src=');
+            $textoB = substr($textoB,$posicion);
+            $valor=strpos($textoB,'embed src=');
         }
         foreach($flashs as $flash){
-            if (strpos($flash,'@@PLUGINFILE@@')!==0){
-                echo ("<br>ENLACE EXTERIOR: ".$flash."<br>");
+            if (strpos($flash,'@@PLUGINFILE@@')===false){
+                if (strpos($flash,'/')!==false) {
+                    $urlexists = $this->url_exists( $flash );
+                    echo("<br>ENLACE EXTERIOR: " . $flash . "<br>");
+                }
             }
         }
+
+
 
         // Sino comienza con <![CDATA[ lo añade
         if(mb_substr($texto,0,9)!='<![CDATA['){
@@ -325,6 +344,48 @@ class ComunPreguntas
             }
         }
         return $texto;
+    }
+
+    /**
+     * @param null $url
+     * @return bool
+     * Comprueba si una url existe.
+     */
+    public function url_exists( $url = NULL ) {
+
+        if( empty( $url ) ){
+            return false;
+        }
+
+        $ch = curl_init( $url );
+
+        //Establecer un tiempo de espera
+        curl_setopt( $ch, CURLOPT_TIMEOUT, 5 );
+        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5 );
+
+        //establecer NOBODY en true para hacer una solicitud tipo HEAD
+        curl_setopt( $ch, CURLOPT_NOBODY, true );
+        //Permitir seguir redireccionamientos
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+        //recibir la respuesta como string, no output
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+
+        $data = curl_exec( $ch );
+
+        //Obtener el código de respuesta
+        $httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+        //cerrar conexión
+        curl_close( $ch );
+
+        //Aceptar solo respuesta 200 (Ok), 301 (redirección permanente) o 302 (redirección temporal)
+        $accepted_response = array( 200, 301, 302 );
+        echo("Codigo: $httpcode");
+        if( in_array( $httpcode, $accepted_response ) ) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -787,7 +848,5 @@ class ComunPreguntas
         }
         return ($xml);
     }
-
-
 
 }

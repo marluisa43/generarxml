@@ -148,7 +148,7 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
         }
     }
     if($tipo=="applet"){
-        $texto=$texto."<br>APPLET";
+        $texto=$texto."<br>(applet)";
     }
     $preguntaDescription->setQuestiontext(agregarCdata($texto));
     $preguntaDescription->setGeneralfeedback('');
@@ -571,9 +571,6 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
     return $xmlPreg;
 }
 
-function pregApplet($pregunta, $root, $xml,$numero){
-
-}
 
 /**
  * @param $xml
