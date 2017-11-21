@@ -326,7 +326,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
     $textoPreg=$textoPreg.buscarmattext($pregunta);
     //Seleccionar zona de respuestas
     $respuestas = $pregunta->getElementsByTagName('flow');
-    $listaDesplegable=0;
+    $contadorElementos=0;
     foreach ($respuestas as $key=>$respuesta){
         if($key!=0){
             foreach ($respuesta->childNodes as $key2=>$item) {
@@ -336,12 +336,13 @@ function pregCloze($pregunta, $root, $xml,$numero){
                         $textoPreg=$textoPreg.buscarmattext($item);
                     }elseif($item->localName=="response_lid"){
                         //elemento select
-                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayCorrectas,$listaDesplegable);
-                        $listaDesplegable++;
+                        $textoPreg=$textoPreg.leerPregMultiCloze($item,$arrayCorrectas,$contadorElementos);
+                        $contadorElementos++;
                     }elseif($item->localName=="response_str"){
                         //elemento input
                         $idRespuesta=$item->getAttribute('ident');
                         $textoPreg=$textoPreg.leerPregShortCloze($pregunta,$idRespuesta);
+                        $contadorElementos++;
                     }
                 }
             }
