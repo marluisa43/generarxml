@@ -129,6 +129,27 @@ class ComunPreguntas
                 }
             }
         }
+
+        // Comprobar cuales son internas, y cuales son externas.
+        $texto=$texto;
+        $valor=strpos($text,'<img ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $images=$matches[1];
+            $posicion= strpos($text,'<img src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<img src=');
+        }
+
+        foreach($images as $image){
+            if (strpos($image,'@@PLUGINFILE@@')!==0){
+                echo ("<br>ENLACE EXTERIOR: ".$image."<br>");
+            }
+        }
+
+
+       // Sino comienza con <![CDATA[ lo añade
        if(mb_substr($texto,0,9)!='<![CDATA['){
             if ( mb_substr($texto,-3,3)== ']]>'){
                 $texto="<![CDATA[".$texto;
@@ -153,6 +174,7 @@ class ComunPreguntas
             $valor=strpos($text,'<a href=');
         }
 
+
         $introducidas=array();
         foreach ($htmls as $html){
             if (!strpos($html,'/')){
@@ -167,6 +189,27 @@ class ComunPreguntas
             }
         }
 
+
+        // Comprobar cuales son internas, y cuales son externas.
+        $texto=$texto;
+        $valor=strpos($text,'<a ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $htmls=$matches[1];
+            $posicion= strpos($text,'<a href=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<a href=');
+        }
+
+        foreach($htmls as $html){
+            if (strpos($html,'@@PLUGINFILE@@')!==0){
+                echo ("<br>ENLACE EXTERIOR: ".$html."<br>");
+            }
+        }
+
+
+        // Sino comienza con <![CDATA[ lo añade
         if(mb_substr($texto,0,9)!='<![CDATA['){
             if ( mb_substr($texto,-3,3)== ']]>'){
                 $texto="<![CDATA[".$texto;
@@ -204,6 +247,25 @@ class ComunPreguntas
             }
         }
 
+        // Comprobar cual es exterior
+        $texto=$text;
+        $valor=strpos($text,'<source ');
+
+        while ($valor) {
+            preg_match_all( $re_extractSons  , $text , $matches);
+            $sons=$matches[1];
+            $posicion= strpos($text,'<source src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<source src=');
+        }
+        foreach($sons as $son){
+            if (strpos($son,'@@PLUGINFILE@@')!==0){
+                echo ("<br>ENLACE EXTERIOR: ".$son."<br>");
+            }
+        }
+
+
+        // Sino comienza con <![CDATA[ lo añade
         if(mb_substr($texto,0,9)!='<![CDATA['){
             if ( mb_substr($texto,-3,3)== ']]>'){
                 $texto="<![CDATA[".$texto;
@@ -238,6 +300,25 @@ class ComunPreguntas
                 }
             }
         }
+
+        // Comprobar si es exterior
+        $texto=$text;
+        $valor=strpos($text,'<embed ');
+
+        while ($valor) {
+            preg_match_all( $re_extractImages  , $text , $matches);
+            $flashs=$matches[1];
+            $posicion= strpos($text,'<embed src=');
+            $text = substr($text,$posicion);
+            $valor=strpos($text,'<embed src=');
+        }
+        foreach($flashs as $flash){
+            if (strpos($flash,'@@PLUGINFILE@@')!==0){
+                echo ("<br>ENLACE EXTERIOR: ".$flash."<br>");
+            }
+        }
+
+        // Sino comienza con <![CDATA[ lo añade
         if(mb_substr($texto,0,9)!='<![CDATA['){
             if ( mb_substr($texto,-3,3)== ']]>'){
                 $texto="<![CDATA[".$texto;
