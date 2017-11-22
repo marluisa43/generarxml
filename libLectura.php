@@ -368,7 +368,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
  * @param $xml
  * @return mixed
  */
-function pregOrdenar($pregunta, $root, $xml,$numero){
+function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
     $preguntaOrden = new PreguntaOrden($root);
 
     //Titulo de pregunta
@@ -403,18 +403,27 @@ function pregOrdenar($pregunta, $root, $xml,$numero){
     $preguntaOrden->setGradingtype('ALL_OR_NOTHING');
     $preguntaOrden->setShowgrading('SHOW');
 
-    //Buscar el orden correcto de las respuestas
-    $arrayCorrectas=buscarRespOrdenar($pregunta);
+
+    //Seleccionar un bloque de preguntas de ordenar
+    $bloqueOrd = $pregunta->getElementsByTagName('response_lid');
+
+
+    //id del bloque
+    $idBloque=$bloqueOrd->item($bloque)->getAttribute('ident');
+
 
     //Seleccionar la zona de respuestas
-    $respuestas = $pregunta->getElementsByTagName('response_label');
+    $respuestas = $bloqueOrd->item($bloque)->getElementsByTagName('response_label');
 
     foreach ($respuestas as $key => $respuesta) {
         $answer= new Answer();
 
         //id del elemento de la respuesta
         $idRespuesta=$respuesta->getAttribute('ident');
-        //Buscar la posicion del elemento
+
+        //Buscar el orden correcto de las respuestas
+        $arrayCorrectas=buscarRespOrdenar($pregunta,$idBloque);
+
         $posRespuesta=array_search($idRespuesta,$arrayCorrectas);
         $answer->setAttriFraction(($posRespuesta+1).".0000000");
         $answer->setAttriFormat("html");
@@ -767,9 +776,18 @@ function buscarRespCor($xml){
     return $arrayCorrectas;
 }
 
-function buscarRespOrdenar($xml){
+function buscarRespOrdenar($xml,$idBloque){
     $listaRespCorrectas = $xml->getElementsByTagName('varequal');
-    $respCorrectas=explode(",",$listaRespCorrectas->item(0)->nodeValue);
+    $comprobacion=0;
+    foreach ($listaRespCorrectas as $respCorrecta){
+        if($respCorrecta->getAttribute("respident")==$idBloque) {
+            $respCorrectas = explode(",", $respCorrecta->nodeValue);
+            $comprobacion = 1;
+        }
+    }
+    if($comprobacion==0){
+        echo "****** No hoy espuestas correctas en preguntas de ordenar<br>";
+    }
     return $respCorrectas;
 }
 

@@ -14,7 +14,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'cuadernos/';
+$directorio = 'xml/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -140,13 +140,16 @@ foreach ($ficheros as $fichero){
                         //Pregunta ORDENAR
                         if($lid->item(0)->getAttribute('rcardinality')=="Ordered") {
                             if ($lid->length>1) {
-                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar multiple<br>";
-                                $ordenar++;
-                                $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                foreach ($lid as $keyPregOrd=>$elePregOrd){
+                                    $numOrde=$numPregunta.".".($keyPregOrd+1);
+                                    echo "Archivo " . $contador . " Pregunta " . $numOrde . " Tipo ordenar multiple<br>";
+                                    $ordenar++;
+                                    $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numOrde,$keyPregOrd);
+                                }
                             }else{
                                 echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar simple<br>";
                                 $ordenar++;
-                                $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
+                                $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,0);
                             }
                         }else{
                             $zona_processing = $pregunta->getElementsByTagName('resprocessing');
