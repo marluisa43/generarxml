@@ -515,6 +515,9 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
 
     foreach ($pregunta->getElementsByTagName('varsubset') as $key => $itemRespCorrect) {
         $parteCorrectas = explode(",",$itemRespCorrect->nodeValue);
+        if($parteCorrectas[1]=="null"){
+            echo "Respuesta NULL arrastrar<br>";
+        }
         $arrayCorrectas[] = trim($parteCorrectas[1]);
         $arrayElementos[] = trim($parteCorrectas[0]);
     }
@@ -779,14 +782,21 @@ function buscarRespCor($xml){
 function buscarRespOrdenar($xml,$idBloque){
     $listaRespCorrectas = $xml->getElementsByTagName('varequal');
     $comprobacion=0;
+    $comprobacionNull=0;
     foreach ($listaRespCorrectas as $respCorrecta){
         if($respCorrecta->getAttribute("respident")==$idBloque) {
             $respCorrectas = explode(",", $respCorrecta->nodeValue);
+            if(in_array("null",$respCorrectas)){
+                $comprobacionNull=1;
+            }
             $comprobacion = 1;
         }
     }
     if($comprobacion==0){
         echo "****** No hoy espuestas correctas en preguntas de ordenar<br>";
+    }
+    if($comprobacionNull==1){
+        echo "****** respuesta NULL ordenar<br>";
     }
     return $respCorrectas;
 }
