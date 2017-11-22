@@ -23,7 +23,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     $preguntaSeleccion=new PreguntaSeleccion($root);
 
     //Enunciado de la pregunta
-    $preguntaSeleccion->setQuestiontext(comprobarTexto(agregarCdata(buscarmattext($pregunta))));
+    $preguntaSeleccion->setQuestiontext(comprobarTextoMultimedia(agregarCdata(buscarmattext($pregunta))));
     //FALTA
     $preguntaSeleccion->setGeneralfeedback('');
     $preguntaSeleccion->setShuffleanswers(true);
@@ -150,7 +150,7 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     if($tipo=="applet"){
         $texto=$texto."<br>(applet)";
     }
-    $preguntaDescription->setQuestiontext(agregarCdata($texto));
+    $preguntaDescription->setQuestiontext(comprobarTextoMultimedia(agregarCdata($texto)));
     $preguntaDescription->setGeneralfeedback('');
 
     $xmlPreg=$preguntaDescription->createDescription($xml);
@@ -189,7 +189,7 @@ function pregEnsayo($pregunta, $root, $xml,$numero,$contador){
         $preguntaEnsayo = new PreguntaEnsayo($root);
 
         $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero, ""));
-        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoCabecera));
+        $preguntaEnsayo->setQuestiontext(comprobarTextoMultimedia(agregarCdata($enunciadoCabecera)));
 
         $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
         $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
@@ -236,7 +236,7 @@ function pregEnsayo($pregunta, $root, $xml,$numero,$contador){
                         $preguntaEnsayo = new PreguntaEnsayo($root);
                         $nu++;
                         $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero . "." . $nu, ""));
-                        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
+                        $preguntaEnsayo->setQuestiontext(comprobarTextoMultimedia(agregarCdata($enunciadoPreg)));
 
                         $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
                         $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
@@ -263,7 +263,7 @@ function pregEnsayo($pregunta, $root, $xml,$numero,$contador){
         $preguntaEnsayo = new PreguntaEnsayo($root);
         $nu++;
         $preguntaEnsayo->setName(buscarTituloPreg($pregunta, $numero . "." . $nu, ""));
-        $preguntaEnsayo->setQuestiontext(agregarCdata($enunciadoPreg));
+        $preguntaEnsayo->setQuestiontext(comprobarTextoMultimedia(agregarCdata($enunciadoPreg)));
 
         $preguntaEnsayo->setDefaultgrade(buscarPuntuacion($pregunta, "True"));
         $preguntaEnsayo->setPenalty(buscarPuntuacion($pregunta, "False"));
@@ -352,7 +352,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
             //echo $textoPreg."<br>";
         }
     }
-    $preguntaCloze->setQuestiontext('<![CDATA['.$textoPreg.']]>');
+    $preguntaCloze->setQuestiontext(comprobarTextoMultimedia('<![CDATA['.$textoPreg.']]>'));
     //$preguntaCloze->setGeneralfeedback('<![CDATA[]]>');
     $preguntaCloze->setHidden(false);
 
@@ -374,7 +374,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
     //Titulo de pregunta
     $preguntaOrden->setName(buscarTituloPreg($pregunta,$numero,""));
     //Enunciado de la pregunta
-    $preguntaOrden->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+    $preguntaOrden->setQuestiontext(comprobarTextoMultimedia(agregarCdata(buscarmattext($pregunta))));
     $preguntaOrden->setGeneralfeedback("");
     //Puntuacion acierto
     $preguntaOrden->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
@@ -461,7 +461,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
     $preguntaDdimageortext = new Ddimageortext($root);
 
     $preguntaDdimageortext->setName(buscarTituloPreg($pregunta,$numero,""));
-    $preguntaDdimageortext->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+    $preguntaDdimageortext->setQuestiontext(comprobarTextoMultimedia(agregarCdata(buscarmattext($pregunta))));
     $preguntaDdimageortext->setGeneralfeedback("");
     $preguntaDdimageortext->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
     $preguntaDdimageortext->setPenalty(buscarPuntuacion($pregunta,"False"));
@@ -959,7 +959,7 @@ function transformarAudio($nodo){
     return $texto;
 }
 
-function comprobarTexto($ristra){
+function comprobarTextoMultimedia($ristra){
     $text = $ristra;
     $images = array();
     $text = htmlspecialchars_decode($text);
