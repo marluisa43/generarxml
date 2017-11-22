@@ -146,7 +146,7 @@ class ComunPreguntas
         foreach($images as $image){
             if (strpos($image,'@@PLUGINFILE@@')===false){
                 if (strpos($image,'/')!==false){
-                    $urlexists = $this->url_exists( $image );
+                    $urlexists = ComunPreguntas::url_exists( $image );
                     echo ("<br>ENLACE EXTERIOR: ".$image."<br>");
                 }
             }
@@ -210,7 +210,7 @@ class ComunPreguntas
         foreach($htmls as $html){
             if (strpos($html,'@@PLUGINFILE@@')===false){
                 if (strpos($html,'/')!==false){
-                    $urlexists = $this->url_exists( $html );
+                    $urlexists = ComunPreguntas::url_exists($html);
                     echo ("<br>ENLACE EXTERIOR: ".$html."<br>");
                 }
             }
@@ -270,7 +270,7 @@ class ComunPreguntas
         foreach($sons as $son){
             if (strpos($son,'@@PLUGINFILE@@')===false){
                 if (strpos($son,'/')!==false) {
-                    $urlexists = $this->url_exists( $son );
+                    $urlexists = ComunPreguntas::url_exists( $son );
                     echo("<br>ENLACE EXTERIOR: " . $son . "<br>");
                 }
             }
@@ -329,7 +329,7 @@ class ComunPreguntas
         foreach($flashs as $flash){
             if (strpos($flash,'@@PLUGINFILE@@')===false){
                 if (strpos($flash,'/')!==false) {
-                    $urlexists = $this->url_exists( $flash );
+                    $urlexists = ComunPreguntas::url_exists( $flash );
                     echo("<br>ENLACE EXTERIOR: " . $flash . "<br>");
                 }
             }
@@ -351,7 +351,7 @@ class ComunPreguntas
      * @return bool
      * Comprueba si una url existe.
      */
-    public function url_exists( $url = NULL ) {
+    public static function url_exists( $url = NULL ){
 
         if( empty( $url ) ){
             return false;
@@ -385,6 +385,8 @@ class ComunPreguntas
         } else {
             return false;
         }
+
+
 
     }
 
@@ -671,6 +673,7 @@ class ComunPreguntas
      *
      */
     public function insertImage($xml,$answernodo,$ristra,$ruta){
+
         $text = $ristra;
         $images = array();
         $text = htmlspecialchars_decode($text);
@@ -703,7 +706,7 @@ class ComunPreguntas
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
                 }else{
-                    echo '****** NO EXISTE LA IMAGEN DE FONDO '.substr($image,15)."<br>";
+                        echo '****** NO EXISTE LA IMAGEN DE FONDO '.substr($image,15)."<br>";
                 }
 
             }

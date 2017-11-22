@@ -959,3 +959,40 @@ function transformarAudio($nodo){
     return $texto;
 }
 
+function comprobarTexto($ristra,$ruta){
+    $text = $ristra;
+    $images = array();
+    $text = htmlspecialchars_decode($text);
+    // Nuestra expresión regular, que busca los src dentro
+    // de las etiquetas <img/>
+    // y que no tenga en cuenta mayusculas o minusculas
+    $re_extractImages='/< *img[^>]*src *= *["\']?([^"\']*)/ims';
+
+    $valor=strpos($text,'<img ');
+
+    while ($valor) {
+        preg_match_all( $re_extractImages  , $text , $matches);
+        $images=$matches[1];
+        $posicion= strpos($text,'<img src=');
+        $text = substr($text,$posicion);
+        $valor=strpos($text,'<img src=');
+    }
+
+    $images = array_reverse($images);
+
+    foreach($images as $image) {
+        if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
+            if (!is_file($ruta . '/' . substr($image, 15))){
+                $im=substr($image,15);
+                $imf=explode("/",$im);
+                $ima=$imf[sizeof($imf)-1];
+                if (is_file($ruta.'/'.$ima)){
+                    $ristra=str_replace($image,'@@PLUGINFILE@@/'.$ima);
+                }
+            }
+
+        }
+
+    }
+    return $ristra;
+}
