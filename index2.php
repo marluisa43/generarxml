@@ -14,7 +14,7 @@ require_once ("BeginXml.php");
 require_once ("libLectura.php");
 
 
-$directorio = 'xml/';
+$directorio = 'cuadernos/';
 $ficheros  = scandir($directorio);
 $contador=0;
 $mixta=0;
@@ -42,7 +42,7 @@ foreach ($ficheros as $fichero){
         $numPregunta=0;
         $contador++;
         /////////////////////////// CONTADOR
-        if($contador!=0){
+        if($contador==128){
 
         $nombre_fichero = $directorio . $fichero . "/".$fichero.".xml";
         $ruta=$directorio . $fichero;
@@ -53,8 +53,10 @@ foreach ($ficheros as $fichero){
         $archivoxml=file_get_contents($nombre_fichero);
         $archivoxml=utf8_encode($archivoxml);
         $archivoxml= str_replace("","'",$archivoxml);
-        $archivoxml= str_replace("",'"',$archivoxml);
-        $archivoxml= str_replace("",'"',$archivoxml);
+        if ($contador!=128){
+            $archivoxml= str_replace("",'"',$archivoxml);
+            $archivoxml= str_replace("",'"',$archivoxml);
+        }
         $archivoxml= str_replace("","&euro;",$archivoxml);
         $archivoxml= str_replace("","&#150;",$archivoxml);
         $archivoxml= str_replace("","&#133;",$archivoxml);
@@ -69,9 +71,9 @@ foreach ($ficheros as $fichero){
 
         //INICIO XML
         $inicioXml = new BeginXml();
-        $inicioXml->setCategory($fichero);
-        //$categoria = new Category();
-        //$inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
+        //$inicioXml->setCategory($fichero);
+        $categoria = new Category();
+        $inicioXml -> setCategory('$system$'.$categoria->getCategory($folder));
         $inicioXml->setRuta($directorio.$fichero);
 
 
