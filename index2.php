@@ -89,7 +89,7 @@ foreach ($ficheros as $fichero){
                     //DESCRIPCION DE PREGUNTA
                     $descripcion++;
                     $numPregunta++;
-                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo descripcion<br>";
+                    informacionPregunta($contador,$numPregunta,"DESCRIPCION");
                     $xml=pregDescripcion($sectionPresentation->item(0),$inicioXml->getRoot(),$xml,$numPregunta,"Secció");
                 }
             }
@@ -110,27 +110,27 @@ foreach ($ficheros as $fichero){
                         $str = $pregunta->getElementsByTagName('response_str');
                         if ($str->length != 0) {
                             //Pregunta MIXTA
-                            echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo mixta<br>";
+                            informacionPregunta($contador,$numPregunta,"MIXTA");
                             $mixta++;
                             $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                         } else {
                             $flow_mat = $pregunta->getElementsByTagName('flow_mat');
                             if ($flow_mat->length != 0) {
                                 //Pregunta CERRADA
-                                echo "Archivo ".$contador." Pregunta ".$numPregunta." tancada<br>";
+                                informacionPregunta($contador,$numPregunta,"MULTICHOICE");
                                 $cerrada++;
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             }
                             else{
-                                //Pregunta SELECCION
-                                echo "Archivo ".$contador." Pregunta ".$numPregunta." seleccion multiple<br>";
+                                //Pregunta SELECCION MULTIPLE
+                                informacionPregunta($contador,$numPregunta,"SELECCION MULTIPLE");
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                                 $seleccion++;
                             }
                         }
                     }else{
                         //Pregunta SELECCION
-                        echo "Archivo ".$contador." Pregunta ".$numPregunta." Tipo seleccion<br>";
+                        informacionPregunta($contador,$numPregunta,"SELECCION");
                         $seleccion++;
                         $xml=pregSeleccion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                     }
@@ -142,12 +142,12 @@ foreach ($ficheros as $fichero){
                             if ($lid->length>1) {
                                 foreach ($lid as $keyPregOrd=>$elePregOrd){
                                     $numOrde=$numPregunta.".".($keyPregOrd+1);
-                                    echo "Archivo " . $contador . " Pregunta " . $numOrde . " Tipo ordenar multiple<br>";
+                                    informacionPregunta($contador,$numPregunta,"ORDENAR MULTIPLE");
                                     $ordenar++;
                                     $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numOrde,$keyPregOrd);
                                 }
                             }else{
-                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ordenar simple<br>";
+                                informacionPregunta($contador,$numPregunta,"ORDENAR SIMPLE");
                                 $ordenar++;
                                 $xml=pregOrdenar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,0);
                             }
@@ -157,7 +157,7 @@ foreach ($ficheros as $fichero){
                                 $zona_feed = $pregunta->getElementsByTagName('or');
                                 if ($zona_feed->length != 0) {
                                     //Pregunta UNIR PUNTOS
-                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo unir puntos(APPLET)<br>";
+                                    informacionPregunta($contador,$numPregunta,"UNIR PUNTOS (APPLET)");
                                     $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                     $unir_puntos++;
                                 }else{
@@ -165,12 +165,12 @@ foreach ($ficheros as $fichero){
                                     $zona_no = $zona_and->item(0)->getElementsByTagName('not');
                                     if ($zona_no->length != 0) {
                                         //pregunta ZONA IMAGEN
-                                        echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo zona imagen(APPLET)<br>";
+                                        informacionPregunta($contador,$numPregunta,"ZONA IMAGEN (APPLET)");
                                         $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                         $zona_imagen++;
                                     }else{
                                         //pregunta PUNTOS IMAGEN
-                                        echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo puntos imagen(APPLET)<br>";
+                                        informacionPregunta($contador,$numPregunta,"PUNTOS IMAGEN (APPLET)");
                                         $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                         $puntos_imagen++;
                                     }
@@ -178,8 +178,8 @@ foreach ($ficheros as $fichero){
                             }else{
                                 //DESCRIPCION DE PREGUNTA
                                 $descripcion++;
+                                informacionPregunta($contador,$numPregunta,"DESCRIPCION");
                                 $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripció");
-                                echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
                             }
 
                         }
@@ -190,10 +190,11 @@ foreach ($ficheros as $fichero){
                             $varequal = $pregunta->getElementsByTagName('varequal');
                             if($varequal->length != 0){
                                 //Pregunta ABIERTA
-                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo oberta<br>";
+                                informacionPregunta($contador,$numPregunta,"ABIERTA");
                                 $abierta++;
                                 $xml=pregCloze($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             }else{
+                                informacionPregunta($contador,$numPregunta,"ENSAYO");
                                 $xml=pregEnsayo($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,$contador);
                                 $ensayo++;
                             }
@@ -201,19 +202,19 @@ foreach ($ficheros as $fichero){
                             //pregunta ARRASTRAR
                             $grp = $pregunta->getElementsByTagName('response_grp');
                             if ($grp->length != 0) {
-                                echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo arrastrar<br>";
+                                informacionPregunta($contador,$numPregunta,"ARRASTRAR");
                                 $arrastrar++;
                                 $xml=pregArrastrar($pregunta,$inicioXml->getRoot(),$xml,$numPregunta);
                             } else {
                                 $dibujo = $pregunta->getElementsByTagName('response_xy');
                                 if ($dibujo->length != 0) {
                                     //pregunta DIBUJO
-                                    echo "Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo dibujo(APPLET)<br>";
+                                    informacionPregunta($contador,$numPregunta,"DIBUJO (APPLET)");
                                     $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"applet");
                                     $preg_dibujo++;
                                 } else {
                                     //DESCRIPCION PREGUNTA
-                                    echo "Pregunta " . $numPregunta . " Tipo Nada<br>";
+                                    informacionPregunta($contador,$numPregunta,"DESCRIPCION");
                                     $xml=pregDescripcion($pregunta,$inicioXml->getRoot(),$xml,$numPregunta,"Descripció");
                                     $descripcion++;
                                 }
@@ -258,6 +259,10 @@ foreach ($ficheros as $fichero){
         }
     }
 }
+function informacionPregunta($contador,$numPregunta,$tipo,$observaciones=NULL){
+    echo "<b>Archivo " . $contador . " Pregunta " . $numPregunta . " Tipo ".$tipo. " " .$observaciones."</b><br>";
+}
+
 echo "<hr>";
 echo "<br>Numero de archivos ".$contador."<br>";
 echo "Numero de preguntas ".$contador_pregunta."<br>";
