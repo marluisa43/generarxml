@@ -673,6 +673,7 @@ class ComunPreguntas
      *
      */
     public function insertImage($xml,$answernodo,$ristra,$ruta){
+
         $text = $ristra;
         $images = array();
         $text = htmlspecialchars_decode($text);
@@ -705,7 +706,7 @@ class ComunPreguntas
                     $file->setAttribute('path', '/');
                     $file->setAttribute('encoding', "base64");
                 }else{
-                    echo '****** NO EXISTE LA IMAGEN DE FONDO '.substr($image,15)."<br>";
+                        echo '****** NO EXISTE LA IMAGEN DE FONDO '.substr($image,15)."<br>";
                 }
 
             }
