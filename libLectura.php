@@ -23,7 +23,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     $preguntaSeleccion=new PreguntaSeleccion($root);
 
     //Enunciado de la pregunta
-    $preguntaSeleccion->setQuestiontext(agregarCdata(buscarmattext($pregunta)));
+    $preguntaSeleccion->setQuestiontext(comprobarTexto(agregarCdata(buscarmattext($pregunta))));
     //FALTA
     $preguntaSeleccion->setGeneralfeedback('');
     $preguntaSeleccion->setShuffleanswers(true);
@@ -959,7 +959,7 @@ function transformarAudio($nodo){
     return $texto;
 }
 
-function comprobarTexto($ristra,$ruta){
+function comprobarTexto($ristra){
     $text = $ristra;
     $images = array();
     $text = htmlspecialchars_decode($text);
@@ -980,17 +980,28 @@ function comprobarTexto($ristra,$ruta){
 
     $images = array_reverse($images);
 
+
     foreach($images as $image) {
         if (substr($image, 0, 15) == '@@PLUGINFILE@@/') {
-            if (!is_file($ruta . '/' . substr($image, 15))){
+            if (!is_file(BeginXml::getRuta() . '/' . substr($image, 15))){
                 $im=substr($image,15);
                 $imf=explode("/",$im);
                 $ima=$imf[sizeof($imf)-1];
-                if (is_file($ruta.'/'.$ima)){
-                    $ristra=str_replace($image,'@@PLUGINFILE@@/'.$ima);
+                if (is_file(BeginXml::getRuta().'/'.$ima)){
+                    $ristra=str_replace($image,'@@PLUGINFILE@@/'.$ima,$ristra);
                 }
             }
 
+        }else{
+            if (!is_file(BeginXml::getRuta() . '/' . $image)){
+                $im=$image;
+                $imf=explode("/",$im);
+                $ima=$imf[sizeof($imf)-1];
+
+                if (is_file(BeginXml::getRuta().'/'.$ima)){
+                    $ristra=str_replace($image,'@@PLUGINFILE@@/'.$ima,$ristra);
+                }
+            }
         }
 
     }
