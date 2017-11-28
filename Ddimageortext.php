@@ -209,9 +209,11 @@ class Ddimageortext extends ComunPreguntas
                 break;
             case IMAGETYPE_PNG:
                 $recourseImage=imagecreatefrompng($imageR);
+                $recourseImage=$this->crearTransparencia($recourseImage);
                 break;
             case IMAGETYPE_GIF:
                 $recourseImage=imagecreatefromgif($imageR);
+                $recourseImage=$this->crearTransparencia($recourseImage);
                 break;
         }
 
@@ -230,6 +232,13 @@ class Ddimageortext extends ComunPreguntas
                 imagegif($imageNew,$imageR);
                 break;
         }
+    }
+
+    public function crearTransparencia($imagen){
+        imagecolortransparent($imagen, imagecolorallocatealpha($imagen, 220, 220, 220, 127));
+        imagealphablending($imagen, false);
+        imagesavealpha($imagen, true);
+        return $imagen;
     }
 
 }
