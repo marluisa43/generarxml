@@ -352,7 +352,7 @@ class ComunPreguntas
      * Comprueba si una url existe.
      */
     public static function url_exists( $url = NULL ){
-
+        $url=NULL;
         if( empty( $url ) ){
             return false;
         }

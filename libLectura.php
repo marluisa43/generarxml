@@ -25,15 +25,15 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
 
     //Enunciado de la pregunta
     $preguntaSeleccion->setQuestiontext(comprobarTextoMultimedia(agregarCdata(buscarmattext($pregunta))));
-    //FALTA
+
     $preguntaSeleccion->setGeneralfeedback('');
     $preguntaSeleccion->setShuffleanswers(true);
     $preguntaSeleccion->setAnswernumbering('abc');
 
     //Puntuacion acierto
     $preguntaSeleccion->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
+
     //Puntuacion fallo
-    //echo "---------".buscarPuntuacion($pregunta,"False")."-----------";
     $preguntaSeleccion->setPenalty(buscarPuntuacion($pregunta,"False"));
 
     //id de pregunta
@@ -44,8 +44,6 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     $idFeedbackCorrecto=buscarIdFeedback($pregunta,"True");
     //Feedback fallo
     $idFeedbackIncorrecto=buscarIdFeedback($pregunta,"False");
-    //Buscar las respuestas que no son correctas
-    $arrayNoCorrectas=buscarRespInc($pregunta);
 
     //Buscar las respuestas que son correctas
     $arrayCorrectas=buscarRespCor($pregunta);
@@ -62,11 +60,14 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     }else{
         $porcentaje = (100 / count($arrayCorrectas));
     }
+
+    //Comprobar que cuantas respuestas correctas hay
     if(count($arrayCorrectas)==1){
         $preguntaSeleccion->setSingle(true);
     }else{
         $preguntaSeleccion->setSingle(false);
     }
+
     foreach ($respuestas as $key => $respuesta) {
 
         $answer = new Answer();
@@ -84,10 +85,9 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
         unset($answer);
     }
     if($respuestas->length==1){
-        crearAlerta(__FUNCTION__,"Solo una opcion en la lista desplegable","e");
+        crearAlerta(__FUNCTION__,"Solo una opcion para elegir","e");
         $answer = new Answer();
         $answer->setAttriFormat("html");
-        //Seleccionar el texto de la respuesta
         $answer->setText(" ");
         $answer->setTextfeedback('');
 
@@ -134,6 +134,10 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
  * @param $root
  * @param $xml
  * @param $numero  - Numero de la pregunta
+ * @param $tipo  - Tipo de pregunta de descripcion
+ * Opciones - Descripció
+ *          - Secció
+ *          - applet
  * @return mixed
  */
 function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
@@ -142,6 +146,8 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     $preguntaDescription->setName(buscarTituloPreg($pregunta,$numero,$tipo));
     //Texto de la descripcion
     $texto=buscarmattext($pregunta);
+
+    //Corrige error con la primera etiqueta flow sin texto
     if($texto==''){
         $segundoNivel = $pregunta->getElementsByTagName('flow');
         if($segundoNivel->item(1)){
@@ -314,9 +320,6 @@ function pregCloze($pregunta, $root, $xml,$numero){
     $preguntaCloze = new PreguntaCloze($root);
 
     //Buscar los id de las respuestas incorrectas
-    //$arrayNoCorrectas=buscarRespInc($pregunta);
-
-    //Buscar los id de las respuestas incorrectas
     $arrayCorrectas=buscarRespCor($pregunta);
 
     // Titulo de la pregunta.
@@ -352,11 +355,9 @@ function pregCloze($pregunta, $root, $xml,$numero){
                     }
                 }
             }
-            //echo $textoPreg."<br>";
         }
     }
     $preguntaCloze->setQuestiontext(comprobarTextoMultimedia('<![CDATA['.$textoPreg.']]>'));
-    //$preguntaCloze->setGeneralfeedback('<![CDATA[]]>');
     $preguntaCloze->setHidden(false);
 
     $xmlPreg=$preguntaCloze->createCloze($xml);
@@ -370,6 +371,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
  * @param $root
  * @param $xml
  * @param $numero  - Numero de la pregunta
+ * @param $bloque  - Numero del bloque de la pregunta dividida en partes
  * @return mixed
  */
 function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
@@ -390,6 +392,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
     echo "ident " . $pregunta->getAttribute('ident') . "<br>";
     //$idPregunta=$pregunta->getAttribute('ident');
 
+    //Identificar la orientacion de la pregunta
     $orientacion=$pregunta->getElementsByTagName('ims_render_object');
     if($orientacion->length!=0){
         if($orientacion->item(0)->getAttribute('orientation')=="column"){
@@ -402,6 +405,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
         $preguntaOrden->setLayouttype('VERTICAL');
         crearAlerta(__FUNCTION__,"No hay orientación","w");
     }
+
     $preguntaOrden->setSelecttype('ALL');
     $preguntaOrden->setSelectcount('0');
     $preguntaOrden->setGradingtype('ALL_OR_NOTHING');
@@ -434,9 +438,11 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
         //Texto del elemento.
         $answer->setText(agregarCdata(buscarmattext($respuesta)));
         $answer->setTextfeedback('');
+        //Insertar el objeto en el array con la posicion correcta
         $answers[$posRespuesta]=$answer;
         unset($answer);
     }
+    //ordenar el array por posicion
     ksort($answers);
     $preguntaOrden->setAnswers($answers);
 
