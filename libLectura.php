@@ -17,6 +17,7 @@ require_once("Drop.php");
  * @param $pregunta
  * @param $root
  * @param $xml
+ * @param $numero  - Numero de la pregunta
  * @return mixed
  */
 function pregSeleccion($pregunta, $root, $xml,$numero){
@@ -57,7 +58,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
     //Calcular el porcentaje para cada respuesta válida;
     if(count($arrayCorrectas)<=0){
         $porcentaje=0;
-        crearAlerta(__FUNCTION__,"No hay respuestas correctas");
+        crearAlerta(__FUNCTION__,"No hay respuestas correctas","e");
     }else{
         $porcentaje = (100 / count($arrayCorrectas));
     }
@@ -83,7 +84,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
         unset($answer);
     }
     if($respuestas->length==1){
-        crearAlerta(__FUNCTION__,"Solo una opcion en la lista desplegable");
+        crearAlerta(__FUNCTION__,"Solo una opcion en la lista desplegable","e");
         $answer = new Answer();
         $answer->setAttriFormat("html");
         //Seleccionar el texto de la respuesta
@@ -132,6 +133,7 @@ function pregSeleccion($pregunta, $root, $xml,$numero){
  * @param $pregunta
  * @param $root
  * @param $xml
+ * @param $numero  - Numero de la pregunta
  * @return mixed
  */
 function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
@@ -143,7 +145,7 @@ function pregDescripcion($pregunta, $root, $xml,$numero,$tipo){
     if($texto==''){
         $segundoNivel = $pregunta->getElementsByTagName('flow');
         if($segundoNivel->item(1)){
-            crearAlerta(__FUNCTION__,"Ejecutar doble flow");
+            crearAlerta(__FUNCTION__,"Ejecutar doble flow","w");
             $texto=buscarmattext($segundoNivel->item(1));
         }
     }
@@ -305,6 +307,7 @@ function buscarmattextTodos($xml){
  * @param $pregunta
  * @param $root
  * @param $xml
+ * @param $numero  - Numero de la pregunta
  * @return mixed
  */
 function pregCloze($pregunta, $root, $xml,$numero){
@@ -366,6 +369,7 @@ function pregCloze($pregunta, $root, $xml,$numero){
  * @param $pregunta
  * @param $root
  * @param $xml
+ * @param $numero  - Numero de la pregunta
  * @return mixed
  */
 function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
@@ -396,7 +400,7 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
         }
     }else{
         $preguntaOrden->setLayouttype('VERTICAL');
-        crearAlerta(__FUNCTION__,"No hay orientación");
+        crearAlerta(__FUNCTION__,"No hay orientación","w");
     }
     $preguntaOrden->setSelecttype('ALL');
     $preguntaOrden->setSelectcount('0');
@@ -507,7 +511,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         $preguntaDdimageortext->setWidthBackgroundImage($imagenFondo->width*$nuevoSize);
 
     }else{
-        crearAlerta(__FUNCTION__,"No existe imagen de fondo");
+        crearAlerta(__FUNCTION__,"No existe imagen de fondo","e");
         $nuevoSize=0;
     }
 
@@ -536,7 +540,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     unset($drop);
                 }
             }else{
-                crearAlerta(__FUNCTION__,"Error al crear drop");
+                crearAlerta(__FUNCTION__,"Error al crear drop","e");
                 $drop= new Drop();
                 $drops[]=$drop;
                 unset($drop);
@@ -564,7 +568,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     unset($drag);
                 }
             }else{
-                crearAlerta(__FUNCTION__,"Error al crear drag");
+                crearAlerta(__FUNCTION__,"Error al crear drag","e");
                 $drag = new Drag();
                 $drags[] = $drag;
                 unset($drag);
@@ -594,7 +598,7 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     $respuestas = $xml->getElementsByTagName('response_label');
     if($respuestas->length!=0){
         if($respuestas->item(0)->getAttribute("ident")=="lab01"){
-            crearAlerta(__FUNCTION__,"Activado modo id iguales");
+            crearAlerta(__FUNCTION__,"Activado modo id iguales","w");
             $modo=1;
         }
     }
@@ -623,13 +627,13 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     if($comprobacion==0){
         if($respuestas->length==0){
             $texto=$texto."NULL~";
-            crearAlerta(__FUNCTION__,"No hay ningún elemento en la lista");
+            crearAlerta(__FUNCTION__,"No hay ningún elemento en la lista","e");
         }
-        crearAlerta(__FUNCTION__,"No hay ninguna respuesta correcta");
+        crearAlerta(__FUNCTION__,"No hay ninguna respuesta correcta","e");
         $texto=$texto."%100%NULL~";
     }
     if($comprobacion>1){
-        crearAlerta(__FUNCTION__,"Hay varias respuestas correctas");
+        crearAlerta(__FUNCTION__,"Hay varias respuestas correctas","e");
     }
     $texto=trim($texto, '~');
     $texto=$texto."}";
@@ -641,7 +645,7 @@ function leerPregShortCloze($xml,$idRespuesta){
     $texto='{1:SHORTANSWER:';
     $listaRespCorrectas = $xml->getElementsByTagName('conditionvar');
     if($listaRespCorrectas->length==0){
-        crearAlerta(__FUNCTION__,"No hay respuesta correcta");
+        crearAlerta(__FUNCTION__,"No hay respuesta correcta","e");
         $texto='';
     }else{
         foreach ($listaRespCorrectas->item(0)->getElementsByTagName('varequal') as $key => $respuesta) {
@@ -651,7 +655,7 @@ function leerPregShortCloze($xml,$idRespuesta){
             }
         }
         if($comprobacion==0){
-            crearAlerta(__FUNCTION__,"no hay respuesta");
+            crearAlerta(__FUNCTION__,"no hay respuesta","e");
             $texto=$texto."=".$idRespuesta."~";
         }
         $texto=trim($texto, '~');
@@ -703,21 +707,21 @@ function buscarIdFeedback($xml, $tipo){
     $listaRespCorrectas = $xml->getElementsByTagName('respcondition');
     if($listaRespCorrectas->length==0){
         $id=0;
-        crearAlerta(__FUNCTION__,"No hay feedback 1");
+        crearAlerta(__FUNCTION__,"No hay feedback 1","w");
     }else{
         foreach ($listaRespCorrectas as $key => $zonaResp) {
             //Seleccionar los feedbacks
             $zonaFeedback = $zonaResp->getElementsByTagName('setvar');
             if($zonaFeedback->length==0){
                 $id=0;
-                crearAlerta(__FUNCTION__,"No hay feedback 2");
+                crearAlerta(__FUNCTION__,"No hay feedback 2","w");
             }else{
                 foreach ($zonaFeedback as $key => $feedback) {
                     if ($feedback->nodeValue == $tipo) {
                         $respFeedback = $zonaResp->getElementsByTagName('displayfeedback');
                         if($respFeedback->length==0){
                             $id=0;
-                            crearAlerta(__FUNCTION__,"No hay feedback 3");
+                            crearAlerta(__FUNCTION__,"No hay feedback 3","w");
                         }else{
                             //Seleccionar id de feedback correcto
                             $id = $respFeedback->item(0)->getAttribute('linkrefid');
@@ -790,10 +794,10 @@ function buscarRespOrdenar($xml,$idBloque){
         }
     }
     if($comprobacion==0){
-        crearAlerta(__FUNCTION__,"No hay respuestas correctas");
+        crearAlerta(__FUNCTION__,"No hay respuestas correctas","e");
     }
     if($comprobacionNull==1){
-        crearAlerta(__FUNCTION__,"Respuesta null");
+        crearAlerta(__FUNCTION__,"Respuesta null","e");
     }
     return $respCorrectas;
 }
@@ -1015,6 +1019,10 @@ function comprobarTextoMultimedia($ristra){
     return $ristra;
 }
 
-function crearAlerta($funcion,$mensaje){
-    echo "****** ".__CLASS__." ".$funcion." -- ".$mensaje."<br>";
+function crearAlerta($funcion,$mensaje,$tipo){
+    if($tipo=="e"){
+        echo "<span style='color:red'>ERROR****** ".__CLASS__." ".$funcion." -- ".$mensaje."</span><br>";
+    }if($tipo=="w"){
+        echo "<span style='color:orange'>WARNING****** ".__CLASS__." ".$funcion." -- ".$mensaje."</span><br>";
+    }
 }
