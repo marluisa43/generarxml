@@ -6,7 +6,7 @@ $sql = "SELECT ID_ACTIVITAT from BIBLIO_ACTIVITAT";
 $conn = new Conexion();
 $query =$conn->executeSQL($sql);
 
-echo "<table>";
+echo "<table border='1'>";
 echo "<tr>";
 echo "<th>Id</th><th>Titulo</th><th>Descripción</th><th>Archivo</th><th>Nivel</th><th>Area</th><th>Autor</th><th>Fecha</th>";
 echo "</tr><tr>";
@@ -15,11 +15,11 @@ while ($row = oci_fetch_object($query, OCI_ASSOC+OCI_RETURN_NULLS)){
     $idCuaderno=$row->ID_ACTIVITAT;
     echo "<td>".$idCuaderno."</td>";
 
-    $sql = "select BIBLIO_VERSIO.DATA_CREACIO BIBLIO_VERSIO_IDIOMA.IDIOMA,BIBLIO_VERSIO.FOLDER 
+    $sql = "select BIBLIO_VERSIO.DATA_CREACIO, BIBLIO_VERSIO_IDIOMA.IDIOMA,BIBLIO_VERSIO.FOLDER 
             from BIBLIO_VERSIO_IDIOMA, BIBLIO_VERSIO
             where BIBLIO_VERSIO.ID_VERSIO=BIBLIO_VERSIO_IDIOMA.ID_VERSIO 
             and BIBLIO_VERSIO.ID_ACTIVITAT=".$idCuaderno;
-    $query2 =$conn->executeSQL($sql);
+    $query2=$conn->executeSQL($sql);
     $version = oci_fetch_object($query2, OCI_ASSOC+OCI_RETURN_NULLS);
     $idioma=$version->IDIOMA;
     $archivoXML=$version->FOLDER."_".$idioma;
