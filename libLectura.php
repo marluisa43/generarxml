@@ -467,10 +467,19 @@ function pregOrdenar($pregunta, $root, $xml,$numero,$bloque){
     return $xmlPreg;
 }
 
-function pregArrastrar($pregunta, $root, $xml,$numero){
+/** Transforma las preguntas de arrastrar en el
+ * formato correcto de Moodle
+ * @param $pregunta
+ * @param $root
+ * @param $xml
+ * @param $numero Numero de la pregunta
+ * @return mixed
+ */
+function pregArrastrar($pregunta, $root, $xml, $numero){
     $preguntaDdimageortext = new Ddimageortext($root);
-
+    // Titulo pregunta
     $preguntaDdimageortext->setName(buscarTituloPreg($pregunta,$numero,""));
+    // Enunciado de la pregunta
     $preguntaDdimageortext->setQuestiontext(comprobarTextoMultimedia(agregarCdata(buscarmattext($pregunta))));
     $preguntaDdimageortext->setGeneralfeedback("");
     $preguntaDdimageortext->setDefaultgrade(buscarPuntuacion($pregunta,"True"));
@@ -497,9 +506,14 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
             $preguntaDdimageortext->setTextIncorrectfeedback(agregarCdata(buscarmattext($itemFeedback)));
         }
     }
+    //Imagen de fondo
     $imagenFondo=buscarmatimage($pregunta);
     $nuevoSizey=1;
     $nuevoSizex=1;
+    /* Redimensiona la imagen de fondo si esta excede de los maximos de Moodle
+    altura 400
+    anchura 600
+    */
     if(isset($imagenFondo->url)) {
         if ($imagenFondo->height > 400) {
             $nuevoSizey = 400 / $imagenFondo->height;
@@ -521,14 +535,15 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
         $nuevoSize=0;
     }
 
+    //buscar en la tabla de cordenadas los elementos arrastables y su posicion correcta
     $ims_render=$pregunta->getElementsByTagName('ims_render_object');
-
     foreach ($pregunta->getElementsByTagName('varsubset') as $key => $itemRespCorrect) {
         $parteCorrectas = explode(",",$itemRespCorrect->nodeValue);
         $arrayCorrectas[] = trim($parteCorrectas[1]);
         $arrayElementos[] = trim($parteCorrectas[0]);
     }
 
+    // Las posiciones correctas de los elementos
     foreach ($ims_render->item(0)->getElementsByTagName('response_label') as $key => $itemResp) {
         //echo "--------------".buscarmattext($itemResp)."---------<br>";
         if($itemResp->hasAttribute("rarea")){
@@ -551,7 +566,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                 $drops[]=$drop;
                 unset($drop);
             }
-
+        // Los elementos arrastables
         }elseif ($itemResp->firstChild->nextSibling->nodeName=="material"){
             if(isset($arrayElementos)){
                 if(in_array(trim($itemResp->getAttribute("ident")),$arrayElementos)) {
@@ -559,6 +574,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                     $drag = new Drag();
                     $drag->setNo(($posRespuesta + 1));
                     $drag->setDraggroup(1);
+                    //Buscar imagen
                     $itemRespImg=$itemResp->getElementsByTagName('matimage');
                     if($itemRespImg->length!=0){
                         $imagenElemnt=buscarmatimage($itemResp);
@@ -566,6 +582,7 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
                         $drag->setWidth($imagenElemnt->width);
                         $drag->setHeight($imagenElemnt->height);
                     }
+                    //Buscar texto
                     $itemRespText=$itemResp->getElementsByTagName('mattext');
                     if($itemRespText->length != 0){
                         $drag->setText(agregarCdata(buscarmattext($itemResp)));
@@ -591,9 +608,10 @@ function pregArrastrar($pregunta, $root, $xml,$numero){
 }
 
 
-/**
+/** Pregunta de lista desplegable
  * @param $xml
  * @param $arrayRespuesta
+ * @param $bloque - Numero del bloque de la pregunta dividida en partes
  * @return string
  */
 function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
@@ -603,6 +621,7 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     $texto='{1:MULTICHOICE:';
     $respuestas = $xml->getElementsByTagName('response_label');
     if($respuestas->length!=0){
+        //Modo para identificar elementos con id iguales
         if($respuestas->item(0)->getAttribute("ident")=="lab01"){
             crearAlerta(__FUNCTION__,"Activado modo id iguales","w");
             $modo=1;
@@ -610,6 +629,7 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     }
     foreach ($respuestas as $key => $respuesta) {
         $id=$respuesta->getAttribute("ident");
+        //Modo id iguales
         if($modo==1){
             if ($arrayRespuesta[$bloque]==$id) {
                 //echo $id."-----VERDAD----<br>";
@@ -620,6 +640,7 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
                 $texto=$texto.strip_tags(buscarmattext($respuesta), '</BR>')."~";
             }
         }else{
+            //Modo normal
             if (in_array($id, $arrayRespuesta)) {
                 //echo $id."-----VERDAD----<br>";
                 $texto=$texto."%100%".strip_tags(buscarmattext($respuesta), '</BR>')."~";
@@ -646,7 +667,12 @@ function leerPregMultiCloze($xml, $arrayRespuesta,$bloque){
     return $texto;
 }
 
-function leerPregShortCloze($xml,$idRespuesta){
+/** Preguntas abiertas (input text)
+ * @param $xml
+ * @param $idRespuesta
+ * @return string
+ */
+function leerPregShortCloze($xml, $idRespuesta){
     $comprobacion=0;
     $texto='{1:SHORTANSWER:';
     $listaRespCorrectas = $xml->getElementsByTagName('conditionvar');
@@ -654,6 +680,7 @@ function leerPregShortCloze($xml,$idRespuesta){
         crearAlerta(__FUNCTION__,"No hay respuesta correcta","e");
         $texto='';
     }else{
+        //Escribir la respuesta correcta
         foreach ($listaRespCorrectas->item(0)->getElementsByTagName('varequal') as $key => $respuesta) {
             if($idRespuesta==$respuesta->getAttribute('respident')){
                 $texto=$texto."=".$respuesta->nodeValue."~";
@@ -670,7 +697,17 @@ function leerPregShortCloze($xml,$idRespuesta){
     return $texto;
 }
 
-function buscarTituloPreg($xml,$numero,$tipo){
+/**
+ * @param $xml
+ * @param $numero
+ * @param $tipo
+ * tipo     - Descripció
+ *          - Secció
+ *          - applet
+ *          - Si es vacio es una pregunta normal
+ * @return string
+ */
+function buscarTituloPreg($xml, $numero, $tipo){
     if($xml->hasAttribute('title')){
         if($xml->getAttribute('title')==''){
             if($tipo!=''){
@@ -763,14 +800,17 @@ function buscarRespInc($xml){
     return $array;
 }
 
+/** Buscar las respuestas correctas
+ * @param $xml
+ * @return array
+ */
 function buscarRespCor($xml){
     $arrayCorrectas= array();
     //Seleccionar la zona donde se encuentra las respuestas y el feedback
     $listaRespCorrectas = $xml->getElementsByTagName('respcondition');
     foreach ($listaRespCorrectas as $key => $zonaResp) {
         if($key==0) {
-            //Seleccionamos las preguntas y las metemos en un array de respuestas incorrectas
-            //$respCorrectas = $zonaResp->getElementsByTagName('and');
+            //Seleccionamos las preguntas y las metemos en un array de respuestas correctas
             $respuestas = $zonaResp->getElementsByTagName('*');
             foreach ($respuestas as $key => $respuesta) {
                 if($respuesta->nodeName=="varequal" or $respuesta->nodeName=="varsubset"){
@@ -786,16 +826,23 @@ function buscarRespCor($xml){
     return $arrayCorrectas;
 }
 
-function buscarRespOrdenar($xml,$idBloque){
+/** Busca la respuesta correcta de una pregunta de ordenar
+ * @param $xml
+ * @param $idBloque
+ * @return array
+ */
+function buscarRespOrdenar($xml, $idBloque){
     $listaRespCorrectas = $xml->getElementsByTagName('varequal');
     $comprobacion=0;
     $comprobacionNull=0;
     foreach ($listaRespCorrectas as $respCorrecta){
         if($respCorrecta->getAttribute("respident")==$idBloque) {
             $respCorrectas = explode(",", $respCorrecta->nodeValue);
+            //Error en los xml originales en los que aparece null en algunas respuestas
             if(in_array("null",$respCorrectas)){
                 $comprobacionNull=1;
             }
+            //Comprueba que haya una respuesta correcta
             $comprobacion = 1;
         }
     }
@@ -809,7 +856,13 @@ function buscarRespOrdenar($xml,$idBloque){
 }
 
 
-function marcarPregCorrectas($id,$array,$porcentaje){
+/**
+ * @param $id
+ * @param $array
+ * @param $porcentaje
+ * @return int
+ */
+function marcarPregCorrectas($id, $array, $porcentaje){
     //Buscar el id dentro del array de respuestas correctas
     //para identificar si la respuesta es correcta o incorrecta
     if (in_array($id, $array)) {
@@ -819,7 +872,12 @@ function marcarPregCorrectas($id,$array,$porcentaje){
     }
 }
 
-function buscarPuntuacion($xml,$tipo){
+/** Buscar la puntuacion al acertar o al fallar
+ * @param $xml
+ * @param $tipo - tipo true/false
+ * @return int
+ */
+function buscarPuntuacion($xml, $tipo){
     $puntuacion=0;
     $tests=$xml->getElementsByTagName('respcondition');
     foreach ($tests as $test){
@@ -843,28 +901,42 @@ function buscarPuntuacion($xml,$tipo){
     return $puntuacion;
 }
 
+/** Descompone un enunciado en textos, imagenes, videos....
+ * @param $xml
+ * @return string
+ */
 function buscarmattext($xml){
     //Seleccionar los enunciados de cada pregunta
-    //var_dump($xml);
     $textos = $xml->getElementsByTagName('material');
+    //Seleccionar todos los hijos de la etiqueta
     if($textos->length==0){
         $nodes = $xml->getElementsByTagName('*');
     }else{
         $nodes = $textos->item(0)->getElementsByTagName('*');
     }
     $texto='';
+    //Recorrer todos los elementos y analizar de que tipo es cada uno
     for ($i = 0; $i < $nodes->length; $i++) {
-        //QUITAR COMENTARIO
         $texto=$texto.tipoTexto($nodes->item($i));
     }
     return $texto;
 }
+
+/**
+ * @param $texto
+ * @return string
+ */
 function agregarCdata($texto){
     $textoInicio="<![CDATA[";
     $textoFinal=']]>';
     return $textoInicio.$texto.$textoFinal;
 }
 
+/** Buscar una imagen dentro de la etiqueta matimage
+ * devuelve un objeto con la url, el ancho y el alto
+ * @param $xml
+ * @return stdClass
+ */
 function buscarmatimage($xml){
     $imagen=new stdClass();
     $itemImage = $xml->getElementsByTagName('matimage');
@@ -878,6 +950,10 @@ function buscarmatimage($xml){
     return $imagen;
 }
 
+/** Clasifica la etiqueta enviada
+ * @param $nodo
+ * @return string
+ */
 function tipoTexto($nodo){
     $texto='';
     if($nodo->localName=="mattext") {
@@ -893,15 +969,17 @@ function tipoTexto($nodo){
         $imagetype=$nodo->getAttribute("imagtype");
         $porciones = explode("/", $imagetype);
         if($porciones[0]=="image"){
+            //IMAGEN
             $texto=transformarImagen($nodo);
         }elseif($porciones[0]=="application"){
             $texto=transformarFlash($nodo);
             echo "++++Archivo flash<br>";
         }else{
-            //echo "NO SE***************************************************";
+            //nada
         }
     }
     if($nodo->localName=="mataudio") {
+        //AUDIO
         $texto=transformarAudio($nodo);
     }
     if($nodo->localName=="matjclic") {
@@ -914,11 +992,16 @@ function tipoTexto($nodo){
         echo "++++Documento";
     }
     if($nodo->localName=="matvideo") {
+        //VIDEO
         $texto=transformarVideo($nodo);
     }
     return $texto;
 }
 
+/**
+ * @param $nodo
+ * @return string
+ */
 function transformarImagen($nodo){
     $texto='<img src="';
     $texto=$texto.'@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'"';
@@ -932,6 +1015,10 @@ function transformarImagen($nodo){
     return $texto;
 }
 
+/**
+ * @param $nodo
+ * @return string
+ */
 function transformarFlash($nodo){
     $texto='<object width="'.$nodo->getAttribute("width").'" height="'.$nodo->getAttribute("height").'" >';
     $texto=$texto.'<param name="movie" value="';
@@ -944,6 +1031,10 @@ function transformarFlash($nodo){
     return $texto;
 }
 
+/**
+ * @param $nodo
+ * @return string
+ */
 function transformarJclic($nodo){
     $nombre=basename($nodo->getAttribute("uri"),".jclic.zip");
     $texto='<object type="text/html" data="https://clic.xtec.cat/projects/'.$nombre.'/jclic.js/index.html" width="'.$nodo->getAttribute("width").'" height="'.$nodo->getAttribute("height").'"></object><br>';
@@ -960,6 +1051,10 @@ function transformarJclic($nodo){
     return $texto;
 }
 
+/**
+ * @param $nodo
+ * @return string
+ */
 function transformarVideo($nodo){
     $texto='<video controls="true"><source src="';
     $texto=$texto.'@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'">';
@@ -968,6 +1063,10 @@ function transformarVideo($nodo){
     return $texto;
 }
 
+/**
+ * @param $nodo
+ * @return string
+ */
 function transformarAudio($nodo){
     $texto='<audio controls="true"><source src="';
     $texto=$texto.'@@PLUGINFILE@@/'.$nodo->getAttribute("uri").'">';
@@ -1025,7 +1124,12 @@ function comprobarTextoMultimedia($ristra){
     return $ristra;
 }
 
-function crearAlerta($funcion,$mensaje,$tipo){
+/**
+ * @param $funcion
+ * @param $mensaje
+ * @param $tipo - e/w
+ */
+function crearAlerta($funcion, $mensaje, $tipo){
     if($tipo=="e"){
         echo "<span style='color:red'>ERROR****** ".__CLASS__." ".$funcion." -- ".$mensaje."</span><br>";
     }if($tipo=="w"){
